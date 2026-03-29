@@ -3,8 +3,6 @@ using Microsoft.Extensions.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var api = builder.AddProject<Projects.ArcaneVault_Web>("arcanevault-web");
-
 const string dbName = "arcanevaultdb";
 
 if (builder.Environment.IsDevelopment())
@@ -17,17 +15,12 @@ if (builder.Environment.IsDevelopment())
     var initScriptPath = Path.Join(Path.GetDirectoryName(typeof(Program).Assembly.Location), "init.sql");
     var arcaneVaultDb = sql.AddDatabase(dbName)
         .WithCreationScript(File.ReadAllText(initScriptPath));
-    api.WaitFor(arcaneVaultDb);
+    
+    builder.AddProject<Projects.ArcaneVault_Web>("arcanevault-web")
+        .WithReference(arcaneVaultDb)
+        .WaitFor(arcaneVaultDb)
+        .WithHttpHealthCheck("/alive")
+        .WithHttpHealthCheck("/health");
 }
-else
-{
-    var azureSql = builder.AddAzureSqlServer("sql-server")
-        .PublishAsConnectionString();
-
-    api.WithReference(azureSql);
-}
-
-api.WithHttpHealthCheck("/alive")
-   .WithHttpHealthCheck("/health");
 
 builder.Build().Run();

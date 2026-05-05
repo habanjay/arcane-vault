@@ -53,6 +53,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: arcanevault
+          
+      - name: List files
+        run: ls -R .
 
       - uses: azure/login@v3
         with:
@@ -62,4 +65,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          package: ./arcanevault
+          package: arcanevault

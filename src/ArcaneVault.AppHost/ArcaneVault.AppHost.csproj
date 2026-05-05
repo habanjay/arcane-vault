@@ -1,0 +1,27 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.2.0">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>1f71f5de-8fb6-4a82-94f6-5e2807ba3188</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" Version="13.2.0" />
+    <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="13.2.0" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArcaneVault.Web\ArcaneVault.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="init.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

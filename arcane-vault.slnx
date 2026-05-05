@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/ArcaneVault.AppHost/ArcaneVault.AppHost.csproj" Id="bf403586-d487-4528-8c14-cda54ebb3af1" />
+    <Project Path="src/ArcaneVault.ServiceDefaults/ArcaneVault.ServiceDefaults.csproj" Id="23476bf1-c252-45bc-9dab-b5e037b01627" />
+    <Project Path="src/ArcaneVault.Web/ArcaneVault.Web.csproj" Id="6be4079a-a76e-4af6-a249-d5373e51533e" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ArcaneVault.Web.IntegrationTests/ArcaneVault.Web.IntegrationTests.csproj" Id="f0471c68-b7ae-4eec-9392-d280443cb4d9" />
+    <Project Path="tests/ArcaneVault.Web.UnitTests/ArcaneVault.Web.UnitTests.csproj" Id="68141c2f-1e6b-4236-b9c9-5af550bc494b" />
+  </Folder>
+</Solution>

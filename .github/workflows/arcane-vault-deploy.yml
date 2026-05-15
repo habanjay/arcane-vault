@@ -54,9 +54,6 @@ jobs:
         with:
           name: arcanevault
           path: ./download
-          
-      - name: List files
-        run: ls -R ./download
 
       - uses: azure/login@v3
         with:

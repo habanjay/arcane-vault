@@ -33,14 +33,11 @@ jobs:
       - name: dotnet publish
         run: dotnet publish ./src/ArcaneVault.Web/ArcaneVault.Web.csproj -c Release -o ./publish
 
-      - name: Zip published output
-        run: zip -r publish.zip ./publish
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: arcanevault
-          path: ./publish.zip
+          path: ./publish
 
   deploy:
     permissions:
@@ -52,13 +49,14 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: arcanevault
+          path: ./download
           
       - name: List files
-        run: ls -R .
+        run: ls -R ./download
 
       - uses: azure/login@v3
         with:
@@ -68,4 +66,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          package: ./arcanevault/publish.zip
+          package: ./download/arcanevault

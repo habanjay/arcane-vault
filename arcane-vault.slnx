@@ -3,6 +3,13 @@
     <File Path=".editorconfig" />
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <Project Path="src/ArcaneVault.AppHost/ArcaneVault.AppHost.AppHost/ArcaneVault.AppHost.AppHost.csproj" Id="513ea562-fa13-4d7f-b032-cc4fe4ca032a" />
+    <Project Path="src/ArcaneVault.AppHost/ArcaneVault.AppHost.Server/ArcaneVault.AppHost.Server.csproj" />
+    <Project Path="src/ArcaneVault.AppHost/ArcaneVault.Client/ArcaneVault.Client.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
   <Folder Name="/tests/" />
 </Solution>

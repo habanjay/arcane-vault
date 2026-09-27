@@ -1,8 +1,9 @@
-export type IconTone = 'dark' | 'blue' | 'green';
+export type IconTone = 'dark' | 'blue' | 'green' | 'light';
 
 export interface NavigationItem {
   label: string;
   icon: string;
+  href: string;
 }
 
 export interface VaultCategory {
@@ -25,16 +26,25 @@ export interface RecentPassword {
   tone: IconTone;
 }
 
+export interface VaultPassword {
+  service: string;
+  initial: string;
+  account: string;
+  favorite: boolean;
+  tone: IconTone;
+  category: 'Personal' | 'Work' | 'Finance';
+}
+
 export const workspaceNavigation: NavigationItem[] = [
-  { label: 'Dashboard', icon: '⌂' },
-  { label: 'All passwords', icon: '▣' },
-  { label: 'Categories', icon: '◈' },
-  { label: 'Shared vaults', icon: '♢' },
+  { label: 'Dashboard', icon: '⌂', href: '#dashboard' },
+  { label: 'All passwords', icon: '▣', href: '#vaults' },
+  { label: 'Categories', icon: '◈', href: '#categories' },
+  { label: 'Shared vaults', icon: '♢', href: '#shared-vaults' },
 ];
 
 export const toolNavigation: NavigationItem[] = [
-  { label: 'Password generator', icon: '⌁' },
-  { label: 'Settings', icon: '⚙' },
+  { label: 'Password generator', icon: '⌁', href: '#generator' },
+  { label: 'Settings', icon: '⚙', href: '#settings' },
 ];
 
 export const vaultCategories: VaultCategory[] = [
@@ -53,4 +63,13 @@ export const recentPasswords: RecentPassword[] = [
   { service: 'Netflix', initial: 'N', account: 'hello@designmonk.com', updated: 'Updated today', favorite: true, tone: 'dark' },
   { service: 'Messenger', initial: 'M', account: 'hello@designmonk.com', updated: 'Updated yesterday', favorite: true, tone: 'blue' },
   { service: 'Spotify', initial: 'S', account: 'hello@designmonk.com', updated: 'Updated Sep 22', favorite: false, tone: 'green' },
+];
+
+export const vaultPasswords: VaultPassword[] = [
+  { service: 'Amazon Prime', initial: 'a', account: 'hello@designmonk.com', favorite: true, tone: 'dark', category: 'Personal' },
+  { service: 'Gmail', initial: 'M', account: 'hello@designmonk.com', favorite: false, tone: 'light', category: 'Work' },
+  { service: 'Messenger', initial: 'M', account: 'hello@designmonk.com', favorite: true, tone: 'blue', category: 'Personal' },
+  { service: 'Udemy', initial: 'u', account: 'hello@designmonk.com', favorite: true, tone: 'light', category: 'Work' },
+  { service: 'Netflix', initial: 'N', account: 'hello@designmonk.com', favorite: false, tone: 'light', category: 'Personal' },
+  { service: 'Coursera', initial: 'C', account: 'hello@designmonk.com', favorite: true, tone: 'light', category: 'Work' },
 ];

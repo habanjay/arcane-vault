@@ -25,16 +25,16 @@ function Navigation({ items, activeItem, onSelect }: { items: NavigationItem[]; 
   return (
     <nav className="grid gap-[7px]" aria-label="Workspace navigation">
       {items.map((item) => (
-        <button
-          className={`flex w-full items-center gap-[13px] rounded-xl border-0 px-[13px] py-3 text-left text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f62570] ${activeItem === item.label ? 'bg-white/12 text-white shadow-[inset_3px_0_#f62570]' : 'text-[#aaa4b8] hover:bg-white/8 hover:text-white'}`}
+          <a
+          className={`flex w-full items-center gap-[13px] rounded-xl px-[13px] py-3 text-left text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f62570] ${activeItem === item.label ? 'bg-white/12 text-white shadow-[inset_3px_0_#f62570]' : 'text-[#aaa4b8] hover:bg-white/8 hover:text-white'}`}
+          href={item.href}
           key={item.label}
-          type="button"
           onClick={() => onSelect(item.label)}
           aria-current={activeItem === item.label ? 'page' : undefined}
         >
           <span className="w-[19px] text-center text-[17px]" aria-hidden="true">{item.icon}</span>
           <span>{item.label}</span>
-        </button>
+        </a>
       ))}
     </nav>
   );
@@ -132,8 +132,8 @@ function RecentPasswords({ passwords, onToggleFavorite }: { passwords: RecentPas
 }
 
 function MobileNavigation({ activeItem, onSelect }: { activeItem: string; onSelect: (label: string) => void }) {
-  const items = [{ label: 'Dashboard', icon: '⌂' }, { label: 'Vaults', icon: '▣' }, { label: 'Add', icon: '＋' }, { label: 'Settings', icon: '⚙' }];
-  return <nav className="fixed inset-x-3 bottom-3 z-5 flex justify-around rounded-[18px] border border-white/80 bg-[#281e3e]/96 px-2 py-2.5 shadow-[0_12px_30px_rgba(24,29,65,0.2)] min-[841px]:hidden" aria-label="Mobile navigation">{items.map((item) => <button className={`grid min-w-[55px] gap-[3px] border-0 bg-transparent p-1 text-center text-[17px] ${activeItem === item.label ? 'text-white' : 'text-[#a9a2b6]'}`} type="button" key={item.label} onClick={() => onSelect(item.label)} aria-current={activeItem === item.label ? 'page' : undefined}>{item.icon}<span className="text-[9px]">{item.label === 'Dashboard' ? 'Home' : item.label}</span></button>)}</nav>;
+  const items = [{ label: 'Dashboard', icon: '⌂', href: '#dashboard' }, { label: 'Vaults', icon: '▣', href: '#vaults' }, { label: 'Add', icon: '＋', href: '#add' }, { label: 'Settings', icon: '⚙', href: '#settings' }];
+  return <nav className="fixed inset-x-3 bottom-3 z-5 flex justify-around rounded-[18px] border border-white/80 bg-[#281e3e]/96 px-2 py-2.5 shadow-[0_12px_30px_rgba(24,29,65,0.2)] min-[841px]:hidden" aria-label="Mobile navigation">{items.map((item) => <a className={`grid min-w-[55px] gap-[3px] p-1 text-center text-[17px] no-underline ${activeItem === item.label ? 'text-white' : 'text-[#a9a2b6]'}`} href={item.href} key={item.label} onClick={() => onSelect(item.label)} aria-current={activeItem === item.label ? 'page' : undefined}>{item.icon}<span className="text-[9px]">{item.label === 'Dashboard' ? 'Home' : item.label}</span></a>)}</nav>;
 }
 
 export default function Dashboard() {

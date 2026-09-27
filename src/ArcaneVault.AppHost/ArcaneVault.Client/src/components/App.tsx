@@ -6,6 +6,7 @@ import Login from './Login';
 import MyVault from './MyVault';
 import PasswordGenerator from './PasswordGenerator';
 import Categories from './Categories';
+import Settings from './Settings';
 
 function useHashRoute() {
   const [route, setRoute] = useState(() => window.location.hash || '#login');
@@ -27,7 +28,7 @@ function App() {
   const route = useHashRoute();
 
   useEffect(() => {
-    document.title = route === '#login' || route === '#sign-in' ? 'Arcane Vault | Sign In' : route === '#create-account' ? 'Arcane Vault | Create Account' : route === '#add' ? 'Arcane Vault | Add Password' : 'Arcane Vault | My Vaults';
+    document.title = route === '#login' || route === '#sign-in' ? 'Arcane Vault | Sign In' : route === '#create-account' ? 'Arcane Vault | Create Account' : route === '#add' ? 'Arcane Vault | Add Password' : route === '#settings' ? 'Arcane Vault | Settings' : 'Arcane Vault | My Vaults';
   }, [route]);
 
   if (route === '#login' || route === '#sign-in') return <Login />;
@@ -38,7 +39,7 @@ function App() {
   if (route === '#categories') return <Categories />;
   if (route === '#shared-vaults') return <RoutePlaceholder title="Shared vaults" description="Secure collaboration for the people and projects you trust." />;
   if (route === '#generator') return <PasswordGenerator />;
-  if (route === '#settings') return <RoutePlaceholder title="Settings" description="Manage your account, security, and vault preferences." />;
+  if (route === '#settings') return <Settings />;
   if (route === '#premium') return <RoutePlaceholder title="Premium" description="Advanced security reports and unlimited vaults are coming soon." />;
   return <RoutePlaceholder title="Page not found" description="That Arcane Vault destination is not available." />;
 }

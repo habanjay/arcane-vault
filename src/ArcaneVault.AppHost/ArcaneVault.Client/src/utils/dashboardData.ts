@@ -53,6 +53,7 @@ export const workspaceNavigation: NavigationItem[] = [
 
 export const toolNavigation: NavigationItem[] = [
   { label: 'Password generator', icon: '⌁', href: '#generator' },
+  { label: 'Audit log', icon: '◷', href: '#audit' },
   { label: 'Settings', icon: '⚙', href: '#settings' },
 ];
 

@@ -49,7 +49,6 @@ export const workspaceNavigation: NavigationItem[] = [
   { label: 'Dashboard', icon: '⌂', href: '#dashboard' },
   { label: 'All passwords', icon: '▣', href: '#vaults' },
   { label: 'Categories', icon: '◈', href: '#categories' },
-  { label: 'Shared vaults', icon: '♢', href: '#shared-vaults' },
 ];
 
 export const toolNavigation: NavigationItem[] = [

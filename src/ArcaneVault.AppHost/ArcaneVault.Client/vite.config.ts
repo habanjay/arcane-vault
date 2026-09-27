@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 const apiTarget =
   process.env['services__arcaneVault-server__https__0'] ??
@@ -10,7 +11,7 @@ const apiTarget =
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   server: {
     proxy: {
       // Proxy API calls to the app service

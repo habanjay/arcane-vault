@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Arcane Vault | My Vaults</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--ink: #172047;
+			--muted: #727891;
+			--paper: #f1f5f8;
+			--white: #fff;
+			--plum: #281e3e;
+			--pink: #f62570;
+			--line: #e5e9f0;
+			--shadow: 0 16px 35px rgba(24, 29, 65, .08);
+		}
+
+		* { box-sizing: border-box; }
+		body { margin: 0; min-width: 320px; color: var(--ink); background: #dfe5eb; font-family: "DM Sans", sans-serif; }
+		button, input { font: inherit; }
+		button { cursor: pointer; }
+		.app-shell { display: flex; min-height: 100vh; max-width: 1500px; margin: 0 auto; background: var(--paper); }
+		.sidebar { display: flex; flex: 0 0 244px; flex-direction: column; padding: 29px 20px; color: #fff; background: var(--plum); }
+		.brand { display: flex; align-items: center; gap: 11px; margin: 0 12px 58px; }
+		.brand-mark { display: grid; width: 38px; height: 38px; place-items: center; color: #fff; font-size: 20px; border-radius: 12px; background: linear-gradient(145deg, #ff4a87, #cb185b); box-shadow: 0 8px 18px rgba(246, 37, 112, .22); }
+		.brand strong { font-family: "Plus Jakarta Sans", sans-serif; font-size: 16px; letter-spacing: -.4px; }
+		.brand small { display: block; margin-top: 2px; color: #a9a2b6; font-size: 10px; }
+		.nav-label { margin: 0 12px 14px; color: #91889f; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+		.nav-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+		.nav-item { display: flex; align-items: center; gap: 13px; width: 100%; padding: 12px 13px; color: #aaa4b8; text-align: left; border: 0; border-radius: 12px; background: transparent; }
+		.nav-item span:first-child { width: 19px; color: currentColor; font-size: 17px; text-align: center; }
+		.nav-item.active, .nav-item:hover { color: #fff; background: rgba(255, 255, 255, .12); }
+		.nav-item.active { box-shadow: inset 3px 0 var(--pink); }
+		.sidebar-bottom { margin-top: auto; padding: 18px 12px 4px; border-top: 1px solid rgba(255,255,255,.11); }
+		.upgrade { padding: 15px; border: 1px solid rgba(255,255,255,.1); border-radius: 15px; background: rgba(255,255,255,.06); }
+		.upgrade p { margin: 0 0 11px; color: #d5d0db; font-size: 11px; line-height: 1.5; }
+		.upgrade button { width: 100%; padding: 9px; color: #fff; font-size: 11px; font-weight: 700; border: 0; border-radius: 8px; background: var(--pink); }
+
+		.main { flex: 1; min-width: 0; padding: 35px 42px 42px; }
+		.topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 30px; }
+		h1 { margin: 0; font-family: "Plus Jakarta Sans", sans-serif; font-size: clamp(24px, 3vw, 34px); letter-spacing: -1.2px; }
+		.eyebrow { margin: 0 0 7px; color: var(--muted); font-size: 12px; }
+		.top-actions { display: flex; align-items: center; gap: 14px; }
+		.icon-button, .back-button { display: grid; place-items: center; color: var(--ink); border: 1px solid var(--line); background: var(--white); }
+		.icon-button { width: 42px; height: 42px; border-radius: 50%; }
+		.icon-button:hover { border-color: var(--pink); color: var(--pink); }
+		.avatar { display: grid; width: 42px; height: 42px; place-items: center; color: #fff; font-size: 12px; font-weight: 700; border-radius: 50%; background: linear-gradient(135deg, #e94079, #8d356d); }
+		.vault-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+		.vault-toolbar h2 { margin: 0; font-family: "Plus Jakarta Sans", sans-serif; font-size: 18px; }
+		.add-button { padding: 11px 17px; color: #fff; font-size: 12px; font-weight: 700; border: 0; border-radius: 10px; background: var(--pink); box-shadow: 0 8px 18px rgba(246, 37, 112, .2); }
+		.add-button:hover { background: #d9185e; }
+		.vault-panel { max-width: 920px; padding: 25px; border: 1px solid var(--line); border-radius: 20px; background: var(--white); box-shadow: var(--shadow); }
+		.search { position: relative; display: block; margin-bottom: 18px; }
+		.search span { position: absolute; top: 50%; left: 15px; color: var(--muted); font-size: 19px; transform: translateY(-52%); }
+		.search input { width: 100%; padding: 13px 16px 13px 43px; color: var(--ink); border: 1px solid var(--line); border-radius: 12px; outline: 0; background: #fbfcfd; }
+		.search input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(246, 37, 112, .1); }
+		.filters { display: flex; gap: 8px; margin-bottom: 21px; overflow-x: auto; scrollbar-width: none; }
+		.filters::-webkit-scrollbar { display: none; }
+		.filter { flex: 0 0 auto; padding: 9px 17px; color: var(--ink); font-size: 11px; border: 1px solid transparent; border-radius: 999px; background: #f8f9fb; }
+		.filter.active, .filter:hover { color: #fff; background: linear-gradient(135deg, #fa3678, #ef4d79); }
+		.password-list { display: grid; gap: 10px; }
+		.password-row { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border: 1px solid transparent; border-radius: 14px; background: #f8f9fb; }
+		.password-row:hover { border-color: #f5c5d8; background: #fff; }
+		.service-icon { display: grid; flex: 0 0 54px; width: 54px; height: 54px; place-items: center; color: #fff; font-family: "Plus Jakarta Sans", sans-serif; font-size: 25px; font-weight: 800; border-radius: 12px; background: #171717; }
+		.service-icon.amazon { color: #111; background: #eef2f5; font-family: Georgia, serif; font-size: 29px; }
+		.service-icon.gmail { background: #eef2f5; color: #e94435; }
+		.service-icon.udemy { color: #ed4b58; background: #eef2f5; font-family: Georgia, serif; font-style: italic; }
+		.service-icon.netflix { color: #d10e1c; background: #eef2f5; }
+		.service-icon.coursera { color: #0c58ca; background: #eef2f5; }
+		.password-details { min-width: 0; flex: 1; }
+		.password-details strong { display: block; font-size: 14px; }
+		.password-details span { display: block; overflow: hidden; margin-top: 5px; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+		.password-details small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; letter-spacing: 2px; }
+		.favorite { color: var(--pink); font-size: 20px; }
+		.favorite.muted { color: #e5eaf0; }
+		.row-actions { display: flex; gap: 8px; }
+		.row-actions button { display: grid; width: 34px; height: 34px; place-items: center; color: #fff; font-size: 15px; border: 0; border-radius: 50%; background: var(--plum); }
+		.row-actions button:last-child { background: var(--pink); }
+		.mobile-nav { display: none; }
+
+		@media (max-width: 840px) {
+			.sidebar { display: none; }
+			.main { padding: 24px 18px 92px; }
+			.topbar { margin-bottom: 26px; }
+			.vault-panel { padding: 18px; border-radius: 18px; }
+			.vault-toolbar h2 { font-size: 16px; }
+			.mobile-nav { position: fixed; right: 12px; bottom: 12px; left: 12px; z-index: 5; display: flex; justify-content: space-around; padding: 10px 8px; border: 1px solid rgba(255,255,255,.8); border-radius: 18px; background: rgba(40,30,62,.96); box-shadow: 0 12px 30px rgba(24,29,65,.2); }
+			.mobile-nav button { display: grid; gap: 3px; min-width: 55px; padding: 4px; color: #a9a2b6; font-size: 17px; text-align: center; border: 0; background: transparent; }
+			.mobile-nav button span { font-size: 9px; }
+			.mobile-nav button.active { color: #fff; }
+		}
+		@media (max-width: 480px) {
+			body { background: var(--paper); }
+			.main { padding: 32px 18px 88px; }
+			.topbar { justify-content: center; margin-bottom: 25px; }
+			.topbar > div:first-child { text-align: center; }
+			.topbar .eyebrow, .top-actions { display: none; }
+			h1 { font-size: 18px; letter-spacing: -.5px; }
+			.vault-toolbar { margin-bottom: 15px; }
+			.vault-toolbar h2 { display: none; }
+			.vault-toolbar:before { content: "‹"; display: grid; width: 36px; height: 36px; place-items: center; color: var(--ink); font-size: 28px; line-height: 1; border-radius: 50%; background: var(--white); box-shadow: var(--shadow); }
+			.add-button { display: none; }
+			.vault-panel { max-width: none; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+			.search input { padding-top: 14px; padding-bottom: 14px; border: 0; border-radius: 14px; background: var(--white); }
+			.filters { margin-right: -18px; margin-bottom: 18px; }
+			.filter { padding: 9px 19px; background: var(--white); }
+			.filter.active { background: linear-gradient(135deg, #fa3678, #ef4d79); }
+			.password-row { padding: 10px 11px; border-radius: 15px; background: var(--white); }
+			.service-icon { flex-basis: 57px; width: 57px; height: 57px; }
+			.password-details strong { font-size: 14px; }
+			.password-details span, .password-details small { font-size: 10px; }
+			.row-actions { margin-right: -2px; }
+			.row-actions button { display: none; }
+			.password-row.selected { margin-right: -18px; margin-left: -18px; padding-left: 11px; padding-right: 18px; border-radius: 0 15px 15px 0; }
+			.password-row.selected .row-actions button { display: grid; }
+		}
+	</style>
+</head>
+<body>
+	<div class="app-shell">
+		<aside class="sidebar" aria-label="Main navigation">
+			<div class="brand"><div class="brand-mark">✦</div><div><strong>Arcane Vault</strong><small>Secure your world</small></div></div>
+			<p class="nav-label">Workspace</p>
+			<nav class="nav-list">
+				<button class="nav-item"><span>⌂</span><span>Dashboard</span></button>
+				<button class="nav-item active"><span>▣</span><span>All passwords</span></button>
+				<button class="nav-item"><span>◈</span><span>Categories</span></button>
+				<button class="nav-item"><span>♢</span><span>Shared vaults</span></button>
+			</nav>
+			<p class="nav-label" style="margin-top: 34px">Tools</p>
+			<nav class="nav-list"><button class="nav-item"><span>⌁</span><span>Password generator</span></button><button class="nav-item"><span>⚙</span><span>Settings</span></button></nav>
+			<div class="sidebar-bottom"><div class="upgrade"><p>Get unlimited vaults and advanced security reports.</p><button>Explore premium</button></div></div>
+		</aside>
+
+		<main class="main">
+			<header class="topbar"><div><p class="eyebrow">Saturday, September 26, 2026</p><h1>My Vaults</h1></div><div class="top-actions"><button class="icon-button" aria-label="Notifications">♧</button><div class="avatar" aria-label="Profile">DM</div></div></header>
+			<div class="vault-toolbar"><h2>All passwords</h2><button class="add-button">＋ Add password</button></div>
+			<section class="vault-panel" aria-labelledby="vault-list-title">
+				<h2 id="vault-list-title" hidden>Saved passwords</h2>
+				<label class="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Search your vaults" aria-label="Search your vaults"></label>
+				<div class="filters" role="group" aria-label="Filter passwords"><button class="filter active">All</button><button class="filter">Recent</button><button class="filter">Favourite</button><button class="filter">Last Edit</button></div>
+				<div class="password-list">
+					<article class="password-row"><div class="service-icon amazon">a</div><div class="password-details"><strong>Amazon Prime</strong><span>hello@designmonk.com</span><small>******** ◉</small></div><div class="favorite" aria-label="Favorite">♥</div></article>
+					<article class="password-row"><div class="service-icon gmail">M</div><div class="password-details"><strong>Gmail</strong><span>hello@designmonk.com</span><small>******** ◉</small></div><div class="favorite muted" aria-label="Not a favorite">♥</div></article>
+					<article class="password-row selected"><div class="service-icon blue">M</div><div class="password-details"><strong>Messenger</strong><span>hello@designmonk.com</span><small>******** ◉</small></div><div class="favorite">♥</div><div class="row-actions"><button aria-label="Edit Messenger">✎</button><button aria-label="Delete Messenger">♜</button></div></article>
+					<article class="password-row"><div class="service-icon udemy">u</div><div class="password-details"><strong>Udemy</strong><span>hello@designmonk.com</span><small>******** ◉</small></div><div class="favorite">♥</div></article>
+					<article class="password-row"><div class="service-icon netflix">N</div><div class="password-details"><strong>Netflix</strong><span>hello@designmonk.com</span><small>******** ◉</small></div><div class="favorite muted">♥</div></article>
+					<article class="password-row"><div class="service-icon coursera">C</div><div class="password-details"><strong>Coursera</strong><span>hello@designmonk.com</span><small>******** ◉</small></div><div class="favorite">♥</div></article>
+				</div>
+			</section>
+		</main>
+		<nav class="mobile-nav" aria-label="Mobile navigation"><button>⌂<span>Home</span></button><button class="active">▣<span>Vaults</span></button><button>＋<span>Add</span></button><button>⚙<span>Settings</span></button></nav>
+	</div>
+</body>
+</html>

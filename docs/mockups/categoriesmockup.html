@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Organize your Arcane Vault passwords by category.">
+	<title>Arcane Vault | Categories</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--ink: #172047;
+			--muted: #727891;
+			--paper: #f1f5f8;
+			--white: #fff;
+			--plum: #281e3e;
+			--pink: #f62570;
+			--coral: #ff7d82;
+			--line: #e5e9f0;
+			--shadow: 0 16px 35px rgba(24, 29, 65, .08);
+		}
+
+		* { box-sizing: border-box; }
+		body { margin: 0; min-width: 320px; color: var(--ink); background: #dfe5eb; font-family: "DM Sans", sans-serif; }
+		button, input { font: inherit; }
+		button { cursor: pointer; }
+		button:focus-visible, input:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
+		.app-shell { display: flex; min-height: 100vh; max-width: 1500px; margin: 0 auto; background: var(--paper); }
+		.sidebar { display: flex; flex: 0 0 244px; flex-direction: column; padding: 29px 20px; color: #fff; background: var(--plum); }
+		.brand { display: flex; align-items: center; gap: 11px; margin: 0 12px 58px; }
+		.brand-mark { display: grid; width: 38px; height: 38px; place-items: center; color: #fff; font-size: 20px; border-radius: 12px; background: linear-gradient(145deg, #ff4a87, #cb185b); box-shadow: 0 8px 18px rgba(246, 37, 112, .22); }
+		.brand strong { font-family: "Plus Jakarta Sans", sans-serif; font-size: 16px; letter-spacing: -.4px; }
+		.brand small { display: block; margin-top: 2px; color: #a9a2b6; font-size: 10px; }
+		.nav-label { margin: 0 12px 14px; color: #91889f; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+		.nav-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+		.nav-item { display: flex; align-items: center; gap: 13px; width: 100%; padding: 12px 13px; color: #aaa4b8; text-align: left; border: 0; border-radius: 12px; background: transparent; }
+		.nav-item span:first-child { width: 19px; color: currentColor; font-size: 17px; text-align: center; }
+		.nav-item.active, .nav-item:hover { color: #fff; background: rgba(255, 255, 255, .12); }
+		.nav-item.active { box-shadow: inset 3px 0 var(--pink); }
+		.sidebar-bottom { margin-top: auto; padding: 18px 12px 4px; border-top: 1px solid rgba(255, 255, 255, .11); }
+		.upgrade { padding: 15px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 15px; background: rgba(255, 255, 255, .06); }
+		.upgrade p { margin: 0 0 11px; color: #d5d0db; font-size: 11px; line-height: 1.5; }
+		.upgrade button { width: 100%; padding: 9px; color: #fff; font-size: 11px; font-weight: 700; border: 0; border-radius: 8px; background: var(--pink); }
+
+		.main { flex: 1; min-width: 0; padding: 35px 42px 42px; }
+		.topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 31px; }
+		.eyebrow { margin: 0 0 7px; color: var(--muted); font-size: 12px; }
+		h1 { margin: 0; font-family: "Plus Jakarta Sans", sans-serif; font-size: clamp(24px, 3vw, 34px); letter-spacing: -1.2px; }
+		.top-actions { display: flex; align-items: center; gap: 14px; }
+		.icon-button { display: grid; width: 42px; height: 42px; place-items: center; color: var(--ink); border: 1px solid var(--line); border-radius: 50%; background: var(--white); }
+		.icon-button:hover { border-color: var(--pink); color: var(--pink); }
+		.avatar { display: grid; width: 42px; height: 42px; place-items: center; color: #fff; font-size: 12px; font-weight: 700; border-radius: 50%; background: linear-gradient(135deg, #e94079, #8d356d); }
+		.page-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 21px; }
+		.page-intro h2 { margin: 0 0 6px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 18px; letter-spacing: -.4px; }
+		.page-intro p { margin: 0; color: var(--muted); font-size: 12px; }
+		.add-button { padding: 11px 17px; color: #fff; font-size: 12px; font-weight: 700; border: 0; border-radius: 10px; background: linear-gradient(105deg, var(--pink), var(--coral)); box-shadow: 0 8px 18px rgba(246, 37, 112, .2); }
+		.add-button:hover { background: var(--plum); }
+		.category-panel { max-width: 1030px; padding: 25px; border: 1px solid var(--line); border-radius: 20px; background: var(--white); box-shadow: var(--shadow); }
+		.panel-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+		.panel-toolbar h3 { margin: 0; font-family: "Plus Jakarta Sans", sans-serif; font-size: 16px; letter-spacing: -.4px; }
+		.category-total { color: var(--muted); font-size: 11px; }
+		.search { position: relative; display: block; width: min(255px, 100%); }
+		.search span { position: absolute; top: 50%; left: 14px; color: var(--muted); font-size: 18px; transform: translateY(-52%); }
+		.search input { width: 100%; padding: 11px 13px 11px 39px; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; outline: 0; background: #fbfcfd; }
+		.search input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(246, 37, 112, .1); }
+		.category-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+		.category-card { position: relative; min-height: 164px; padding: 19px; border: 1px solid var(--line); border-radius: 16px; background: #fbfcfd; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+		.category-card:hover { border-color: #f5c5d8; box-shadow: 0 10px 22px rgba(24, 29, 65, .07); transform: translateY(-2px); }
+		.category-card.empty { display: grid; place-items: center; min-height: 164px; border-style: dashed; background: #fffafd; }
+		.card-menu { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; color: var(--muted); font-size: 17px; border: 0; border-radius: 50%; background: transparent; }
+		.card-menu:hover { color: var(--pink); background: #fff0f5; }
+		.category-icon { display: grid; width: 45px; height: 45px; place-items: center; margin-bottom: 17px; color: #7358d1; font-size: 20px; border-radius: 13px; background: #f0edff; }
+		.category-icon.blue { color: #2c82d8; background: #eaf5ff; }
+		.category-icon.green { color: #249b70; background: #e8f8f1; }
+		.category-icon.orange { color: #d88435; background: #fff3e4; }
+		.category-icon.pink { color: var(--pink); background: #fff0f5; }
+		.category-card strong { display: block; font-family: "Plus Jakarta Sans", sans-serif; font-size: 13px; }
+		.category-card p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+		.category-card .card-arrow { position: absolute; right: 18px; bottom: 20px; color: #aeb4c3; font-size: 17px; }
+		.empty-copy { color: var(--muted); font-size: 11px; text-align: center; }
+		.empty-copy strong { display: block; margin-bottom: 5px; color: var(--ink); font-family: "Plus Jakarta Sans", sans-serif; font-size: 12px; }
+		.empty-copy button { margin-top: 9px; padding: 7px 11px; color: var(--pink); font-size: 10px; font-weight: 700; border: 1px solid #f5c5d8; border-radius: 8px; background: #fff; }
+		.empty-state { display: none; padding: 25px 8px 8px; color: var(--muted); font-size: 12px; text-align: center; }
+		.mobile-nav { display: none; }
+
+		@media (max-width: 960px) {
+			.category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		}
+		@media (max-width: 840px) {
+			.sidebar { display: none; }
+			.main { padding: 24px 18px 92px; }
+			.topbar { margin-bottom: 25px; }
+			.category-panel { padding: 18px; }
+			.mobile-nav { position: fixed; right: 12px; bottom: 12px; left: 12px; z-index: 5; display: flex; justify-content: space-around; padding: 10px 8px; border: 1px solid rgba(255, 255, 255, .8); border-radius: 18px; background: rgba(40, 30, 62, .96); box-shadow: 0 12px 30px rgba(24, 29, 65, .2); }
+			.mobile-nav button { display: grid; gap: 3px; min-width: 55px; padding: 4px; color: #a9a2b6; font-size: 17px; text-align: center; border: 0; background: transparent; }
+			.mobile-nav button span { font-size: 9px; }
+			.mobile-nav button.active { color: #fff; }
+		}
+		@media (max-width: 560px) {
+			body { background: var(--paper); }
+			.main { padding: 32px 18px 88px; }
+			.topbar { justify-content: center; }
+			.topbar > div:first-child { text-align: center; }
+			.topbar .eyebrow, .top-actions { display: none; }
+			h1 { font-size: 20px; letter-spacing: -.6px; }
+			.page-intro { align-items: flex-start; margin-bottom: 17px; }
+			.page-intro h2 { font-size: 16px; }
+			.page-intro p { max-width: 220px; line-height: 1.45; }
+			.add-button { width: 40px; height: 40px; padding: 0; font-size: 0; border-radius: 12px; }
+			.add-button::after { content: "+"; font-size: 22px; font-weight: 400; }
+			.category-panel { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+			.panel-toolbar { align-items: stretch; flex-direction: column; gap: 13px; margin-bottom: 16px; }
+			.search { width: 100%; }
+			.category-grid { grid-template-columns: 1fr 1fr; gap: 9px; }
+			.category-card { min-height: 145px; padding: 15px; }
+			.category-card.empty { min-height: 145px; }
+			.category-icon { width: 39px; height: 39px; margin-bottom: 15px; font-size: 18px; }
+			.category-card .card-arrow { right: 14px; bottom: 15px; }
+		}
+	</style>
+</head>
+<body>
+	<div class="app-shell">
+		<aside class="sidebar" aria-label="Main navigation">
+			<div class="brand"><div class="brand-mark">✦</div><div><strong>Arcane Vault</strong><small>Secure your world</small></div></div>
+			<p class="nav-label">Workspace</p>
+			<nav class="nav-list">
+				<button class="nav-item"><span>⌂</span><span>Dashboard</span></button>
+				<button class="nav-item"><span>▣</span><span>All passwords</span></button>
+				<button class="nav-item active"><span>◈</span><span>Categories</span></button>
+				<button class="nav-item"><span>♢</span><span>Shared vaults</span></button>
+			</nav>
+			<p class="nav-label" style="margin-top: 34px">Tools</p>
+			<nav class="nav-list"><button class="nav-item"><span>⌁</span><span>Password generator</span></button><button class="nav-item"><span>⚙</span><span>Settings</span></button></nav>
+			<div class="sidebar-bottom"><div class="upgrade"><p>Get unlimited vaults and advanced security reports.</p><button>Explore premium</button></div></div>
+		</aside>
+
+		<main class="main">
+			<header class="topbar"><div><p class="eyebrow">Saturday, September 26, 2026</p><h1>Categories</h1></div><div class="top-actions"><button class="icon-button" aria-label="Notifications">♧</button><div class="avatar" aria-label="Profile">DM</div></div></header>
+			<div class="page-intro"><div><h2>Organize your vault</h2><p>Group your passwords into categories that make sense for you.</p></div><button class="add-button" type="button" id="add-category">＋ Create category</button></div>
+			<section class="category-panel" aria-labelledby="category-list-title">
+				<div class="panel-toolbar"><div><h3 id="category-list-title">Your categories</h3><span class="category-total">6 categories · 48 passwords</span></div><label class="search"><span aria-hidden="true">⌕</span><input id="category-search" type="search" placeholder="Search categories" aria-label="Search categories"></label></div>
+				<div class="category-grid" id="category-grid">
+					<article class="category-card" data-category="personal"><button class="card-menu" type="button" aria-label="More options for Personal">•••</button><div class="category-icon pink">♡</div><strong>Personal</strong><p>12 passwords</p><span class="card-arrow" aria-hidden="true">→</span></article>
+					<article class="category-card" data-category="work"><button class="card-menu" type="button" aria-label="More options for Work">•••</button><div class="category-icon blue">▣</div><strong>Work</strong><p>09 passwords</p><span class="card-arrow" aria-hidden="true">→</span></article>
+					<article class="category-card" data-category="finance"><button class="card-menu" type="button" aria-label="More options for Finance">•••</button><div class="category-icon green">◈</div><strong>Finance</strong><p>08 passwords</p><span class="card-arrow" aria-hidden="true">→</span></article>
+					<article class="category-card" data-category="social"><button class="card-menu" type="button" aria-label="More options for Social">•••</button><div class="category-icon orange">✣</div><strong>Social media</strong><p>07 passwords</p><span class="card-arrow" aria-hidden="true">→</span></article>
+					<article class="category-card" data-category="shopping"><button class="card-menu" type="button" aria-label="More options for Shopping">•••</button><div class="category-icon pink">◇</div><strong>Shopping</strong><p>06 passwords</p><span class="card-arrow" aria-hidden="true">→</span></article>
+					<article class="category-card" data-category="travel"><button class="card-menu" type="button" aria-label="More options for Travel">•••</button><div class="category-icon blue">⌁</div><strong>Travel</strong><p>06 passwords</p><span class="card-arrow" aria-hidden="true">→</span></article>
+					<article class="category-card empty"><div class="empty-copy"><strong>Need another group?</strong><span>Create a category for anything you want to keep close.</span><br><button type="button" class="inline-add">＋ New category</button></div></article>
+				</div>
+				<p class="empty-state" id="empty-state">No categories match your search.</p>
+			</section>
+		</main>
+		<nav class="mobile-nav" aria-label="Mobile navigation"><button>⌂<span>Home</span></button><button>▣<span>Vaults</span></button><button class="active">◈<span>Categories</span></button><button>⚙<span>Settings</span></button></nav>
+	</div>
+	<script>
+		const search = document.getElementById('category-search');
+		const cards = [...document.querySelectorAll('.category-card[data-category]')];
+		const emptyState = document.getElementById('empty-state');
+		const filterCategories = () => {
+			const query = search.value.trim().toLowerCase();
+			let visible = 0;
+			cards.forEach(card => {
+				const matches = card.dataset.category.includes(query);
+				card.hidden = !matches;
+				if (matches) visible += 1;
+			});
+			emptyState.style.display = visible ? 'none' : 'block';
+		};
+		search.addEventListener('input', filterCategories);
+		document.querySelectorAll('#add-category, .inline-add').forEach(button => button.addEventListener('click', () => {
+			search.focus();
+			search.placeholder = 'Name your new category';
+		}));
+	</script>
+</body>
+</html>

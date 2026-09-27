@@ -5,6 +5,7 @@ import AddPassword from './AddPassword';
 import Login from './Login';
 import MyVault from './MyVault';
 import PasswordGenerator from './PasswordGenerator';
+import Categories from './Categories';
 
 function useHashRoute() {
   const [route, setRoute] = useState(() => window.location.hash || '#login');
@@ -34,7 +35,7 @@ function App() {
   if (route === '#dashboard') return <Dashboard />;
   if (route === '#vaults') return <MyVault />;
   if (route === '#add') return <AddPassword />;
-  if (route === '#categories') return <RoutePlaceholder title="Categories" description="Organize your passwords into the groups that fit your world." />;
+  if (route === '#categories') return <Categories />;
   if (route === '#shared-vaults') return <RoutePlaceholder title="Shared vaults" description="Secure collaboration for the people and projects you trust." />;
   if (route === '#generator') return <PasswordGenerator />;
   if (route === '#settings') return <RoutePlaceholder title="Settings" description="Manage your account, security, and vault preferences." />;

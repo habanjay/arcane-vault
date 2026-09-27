@@ -1,11 +1,7 @@
-import CreateAccount from './CreateAccount';
+import Dashboard from './Dashboard';
 
 function App() {
-  return (
-    <div className="grid min-h-screen min-w-[320px] place-items-center bg-[#dfe5eb] font-sans text-[#172047] max-[700px]:bg-[#f1f5f8]">
-      <CreateAccount />
-    </div>
-  );
+  return <Dashboard />;
 }
 
 export default App;

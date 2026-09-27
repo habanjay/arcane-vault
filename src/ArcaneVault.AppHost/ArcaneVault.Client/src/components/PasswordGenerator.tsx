@@ -105,9 +105,9 @@ export default function PasswordGenerator() {
 
   return <div className="flex min-h-screen min-w-[320px] bg-[#dfe5eb] font-sans text-[#172047] max-[840px]:bg-[#f1f5f8]">
     <Sidebar activeItem="Password generator" />
-    <main className="min-w-0 flex-1 bg-[#f1f5f8] px-[14px] pb-[92px] pt-5 min-[481px]:px-[18px] min-[481px]:pt-6 min-[841px]:px-[42px] min-[841px]:pb-[42px] min-[841px]:pt-[35px]">
+    <main className="min-w-0 flex-1 bg-[#f1f5f8] px-[18px] pb-[92px] pt-8 min-[481px]:pt-6 min-[841px]:px-[42px] min-[841px]:pb-[42px] min-[841px]:pt-[35px]">
       <Header title="Password generator" onNotify={() => setCopyStatus('You are all caught up.')} />
-      <div className="mx-auto grid max-w-[1100px] gap-[18px] min-[841px]:grid-cols-[minmax(310px,0.86fr)_minmax(420px,1.35fr)] min-[841px]:gap-6">
+      <div className="grid max-w-[1100px] gap-[18px] min-[841px]:grid-cols-[minmax(310px,0.86fr)_minmax(420px,1.35fr)] min-[841px]:gap-6">
         <section className="relative min-h-[300px] overflow-hidden rounded-[18px] bg-linear-to-br from-[#573049] to-[#281e3e] p-5 text-white shadow-[0_16px_35px_rgba(24,29,65,0.08)] min-[481px]:rounded-[25px] min-[481px]:p-7 min-[841px]:min-h-[500px]" aria-labelledby="generator-intro-title">
           <p className="relative z-1 m-0 text-[11px] font-bold uppercase tracking-[1px] text-[#c4b9c7]">Security tool</p>
           <h2 className="relative z-1 mb-[13px] mt-[9px] max-w-[260px] font-display text-[23px] leading-[1.15] min-[481px]:text-[26px]" id="generator-intro-title">Create a password that stands alone.</h2>

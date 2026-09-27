@@ -119,9 +119,11 @@ function AccountForm() {
 
 export default function CreateAccount() {
   return (
-    <main className="grid w-[min(100%-28px,940px)] overflow-hidden rounded-[22px] bg-white shadow-[0_20px_45px_rgba(24,29,65,0.12)] sm:min-h-[650px] sm:w-[min(100%-40px,940px)] sm:rounded-[28px] lg:grid-cols-[minmax(280px,0.86fr)_minmax(360px,1.14fr)]" id="create-account">
+    <div className="grid min-h-screen w-full place-items-center p-[14px] sm:p-5">
+      <main className="grid w-[min(100%,940px)] overflow-hidden rounded-[22px] bg-white shadow-[0_20px_45px_rgba(24,29,65,0.12)] sm:min-h-[650px] sm:rounded-[28px] lg:grid-cols-[minmax(280px,0.86fr)_minmax(360px,1.14fr)]" id="create-account">
       <BrandPanel />
       <AccountForm />
-    </main>
+      </main>
+    </div>
   );
 }

@@ -17,7 +17,7 @@ function PasswordFilters({ filter, onFilterChange }: { filter: Filter; onFilterC
 }
 
 function VaultToolbar({ onAdd }: { onAdd: () => void }) {
-  return <div className="mb-[15px] flex items-center justify-between gap-5 min-[481px]:mb-[18px]"><h2 className="font-display text-base min-[481px]:text-lg">All passwords</h2><button className="rounded-[10px] border-0 bg-[#f62570] px-[17px] py-[11px] text-xs font-bold text-white shadow-[0_8px_18px_rgba(246,37,112,0.2)] hover:bg-[#d9185e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f62570] max-[480px]:hidden" type="button" onClick={onAdd}>＋ Add password</button></div>;
+  return <div className="mb-[15px] flex items-center justify-between gap-5 min-[481px]:mb-[18px]"><h2 className="font-display text-base min-[481px]:text-lg">All passwords</h2><button className="rounded-[10px] border-0 bg-[#f62570] px-[17px] py-[11px] text-xs font-bold text-white shadow-[0_8px_18px_rgba(246,37,112,0.2)] hover:bg-[#d9185e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f62570] max-[480px]:hidden" type="button" onClick={() => { onAdd(); window.location.hash = '#add'; }}>＋ Add password</button></div>;
 }
 
 export default function MyVault() {

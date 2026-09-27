@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Header from './layout/Header';
+import Footer from './layout/Footer';
 import MobileNavigation from './layout/MobileNavigation';
 import Sidebar from './layout/Sidebar';
 import { settingsData, type SettingsData, type SettingsPreferences, type SettingsProfile } from '../utils/settingsData';
@@ -10,7 +11,7 @@ function Toggle({ label, enabled, onToggle }: { label: string; enabled: boolean;
 
 function Panel({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   const titleId = `${title.toLowerCase().replace(/ /g, '-')}-title`;
-  return <section className="rounded-[20px] border border-[#e5e9f0] bg-white p-[25px] shadow-[0_16px_35px_rgba(24,29,65,0.08)] max-[480px]:rounded-[18px] max-[480px]:p-[18px]" aria-labelledby={titleId}><div className="mb-[22px]"><h2 className="font-display text-base tracking-[-0.4px]" id={titleId}>{title}</h2><p className="mt-[5px] text-[11px] leading-[1.5] text-[#727891]">{description}</p></div>{children}</section>;
+  return <><section className="rounded-[20px] border border-[#e5e9f0] bg-white p-[25px] shadow-[0_16px_35px_rgba(24,29,65,0.08)] max-[480px]:rounded-[18px] max-[480px]:p-[18px]" aria-labelledby={titleId}><div className="mb-[22px]"><h2 className="font-display text-base tracking-[-0.4px]" id={titleId}>{title}</h2><p className="mt-[5px] text-[11px] leading-[1.5] text-[#727891]">{description}</p></div>{children}</section>{title === 'Preferences' && <Footer />}</>;
 }
 
 function SettingRow({ title, description, children, first = false }: { title: string; description: string; children: React.ReactNode; first?: boolean }) {

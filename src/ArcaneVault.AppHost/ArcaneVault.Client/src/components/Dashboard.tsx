@@ -8,6 +8,7 @@ import {
   type NavigationItem,
   type RecentPassword,
 } from '../utils/dashboardData';
+import Footer from './layout/Footer';
 
 function Brand() {
   return (
@@ -48,12 +49,6 @@ function Sidebar({ activeItem, onSelect }: { activeItem: string; onSelect: (labe
       <Navigation items={workspaceNavigation} activeItem={activeItem} onSelect={onSelect} />
       <p className="mb-3 mt-[34px] px-3 text-[10px] font-bold uppercase tracking-[1.2px] text-[#91889f]">Tools</p>
       <Navigation items={toolNavigation} activeItem={activeItem} onSelect={onSelect} />
-      <div className="mt-auto border-t border-white/10 px-3 pb-1 pt-[18px]">
-        <div className="rounded-[15px] border border-white/10 bg-white/6 p-[15px]">
-          <p className="mb-[11px] text-[11px] leading-[1.5] text-[#d5d0db]">Get unlimited vaults and advanced security reports.</p>
-          <button className="w-full rounded-lg border-0 bg-[#f62570] px-2 py-[9px] text-[11px] font-bold text-white hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f62570]" type="button">Explore premium</button>
-        </div>
-      </div>
     </aside>
   );
 }
@@ -153,6 +148,7 @@ export default function Dashboard() {
         <div className="grid gap-[18px] min-[841px]:gap-6"><VaultsPanel /><ActivityPanel /></div>
         <RecentPasswords passwords={passwords} onToggleFavorite={toggleFavorite} />
       </div>
+      <Footer />
     </main>
     <MobileNavigation activeItem={activeItem} onSelect={setActiveItem} />
   </div>;

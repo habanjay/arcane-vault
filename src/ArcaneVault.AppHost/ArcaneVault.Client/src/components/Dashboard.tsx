@@ -92,7 +92,7 @@ function PanelHeader({ title, titleId, linkLabel, href = '#' }: { title: string;
 
 function VaultsPanel() {
   return <section className="rounded-[18px] border border-[#e5e9f0] bg-white p-[18px] shadow-[0_16px_35px_rgba(24,29,65,0.08)] min-[481px]:rounded-[20px] min-[481px]:p-[25px]" aria-labelledby="categories-title">
-    <PanelHeader title="Your vaults" titleId="categories-title" linkLabel="View all" href="#all-vaults" />
+    <PanelHeader title="Your vaults" titleId="categories-title" linkLabel="View all" href="#vaults" />
     <div className="grid grid-cols-3 gap-[7px] min-[481px]:gap-3">
       {vaultCategories.map((category) => <article className="rounded-[14px] border border-[#e5e9f0] bg-[#fbfcfd] px-[5px] py-[11px] text-center min-[481px]:px-[10px] min-[481px]:py-[14px]" key={category.name}>
         <div className="mx-auto mb-2.5 grid size-10 place-items-center rounded-full bg-[#fff0f5] text-lg text-[#f62570]" aria-hidden="true">{category.icon}</div>
@@ -105,7 +105,7 @@ function VaultsPanel() {
 
 function ActivityPanel() {
   return <section className="rounded-[18px] border border-[#e5e9f0] bg-white p-[18px] shadow-[0_16px_35px_rgba(24,29,65,0.08)] min-[481px]:rounded-[20px] min-[481px]:p-[25px]" aria-labelledby="stats-title">
-    <PanelHeader title="Vault activity" titleId="stats-title" linkLabel="This month" href="#activity" />
+    <PanelHeader title="Vault activity" titleId="stats-title" linkLabel="This month" href="#audit" />
     <div className="grid grid-cols-3 gap-[7px] min-[481px]:gap-3">{vaultStats.map((stat) => <div className="rounded-[13px] bg-[#f8f9fb] px-[9px] py-[11px] min-[481px]:px-[15px] min-[481px]:py-[13px]" key={stat.label}><strong className="block font-display text-xl">{stat.value}</strong><span className="text-[10px] text-[#727891]">{stat.label}</span></div>)}</div>
   </section>;
 }
@@ -121,7 +121,7 @@ function PasswordRow({ password, onToggleFavorite }: { password: RecentPassword;
 
 function RecentPasswords({ passwords, onToggleFavorite }: { passwords: RecentPassword[]; onToggleFavorite: (service: string) => void }) {
   return <section className="rounded-[18px] border border-[#e5e9f0] bg-white p-[18px] shadow-[0_16px_35px_rgba(24,29,65,0.08)] min-[481px]:rounded-[20px] min-[481px]:p-[25px] min-[841px]:col-span-2" aria-labelledby="recent-title">
-    <PanelHeader title="Recently used" titleId="recent-title" linkLabel="See more" href="#recent" />
+    <PanelHeader title="Recently used" titleId="recent-title" linkLabel="See more" href="#audit" />
     <div className="grid gap-[9px]">{passwords.map((password) => <PasswordRow key={password.service} password={password} onToggleFavorite={onToggleFavorite} />)}</div>
   </section>;
 }

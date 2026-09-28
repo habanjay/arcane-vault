@@ -126,7 +126,7 @@ export default function PasswordGenerator() {
           <button className="mt-[5px] w-full rounded-[9px] border-0 bg-[#f62570] p-[13px] font-bold text-white shadow-[0_9px_18px_rgba(246,37,112,0.2)] hover:bg-[#d91b61] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#43b8ff]" type="button" onClick={generatePassword}>Generate new password <span aria-hidden="true">↗</span></button><p className="mb-0 mt-[15px] text-center text-[10px] text-[#727891]">Tip: passwords of 16+ characters are recommended for most accounts.</p>
         </section>
       </div>
-      <Footer />
+      <div className="max-w-[1100px] pt-4"><Footer /></div>
     </main>
     <MobileNavigation activeItem="Password generator" />
   </div>;

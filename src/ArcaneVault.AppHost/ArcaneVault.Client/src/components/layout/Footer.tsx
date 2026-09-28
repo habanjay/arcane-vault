@@ -1,3 +1,3 @@
 export default function Footer() {
-  return <footer className="mt-8 flex max-w-[920px] flex-wrap items-center justify-between gap-3 border-t border-[#e5e9f0] pt-4 text-[10px] text-[#727891]"><span>Arcane Vault keeps your secrets close.</span><nav className="flex gap-4" aria-label="Footer navigation"><a className="text-[#727891] no-underline hover:text-[#f62570]" href="#privacy">Privacy</a><a className="text-[#727891] no-underline hover:text-[#f62570]" href="#help">Help center</a></nav></footer>;
+  return null;
 }

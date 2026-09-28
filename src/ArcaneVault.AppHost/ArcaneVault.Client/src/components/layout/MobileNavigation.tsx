@@ -1,0 +1,5 @@
+const items = [{ label: 'Dashboard', icon: '⌂', href: '#dashboard' }, { label: 'Vaults', icon: '▣', href: '#vaults' }, { label: 'Add', icon: '＋', href: '#add' }, { label: 'Audit', icon: '◷', href: '#audit' }, { label: 'Settings', icon: '⚙', href: '#settings' }];
+
+export default function MobileNavigation({ activeItem }: { activeItem: string }) {
+  return <nav className="fixed inset-x-3 bottom-3 z-5 flex justify-around rounded-[18px] border border-white/80 bg-[#281e3e]/96 px-2 py-2.5 shadow-[0_12px_30px_rgba(24,29,65,0.2)] min-[841px]:hidden" aria-label="Mobile navigation">{items.map((item) => <a className={`grid min-w-[55px] gap-[3px] p-1 text-center text-[17px] no-underline ${activeItem === item.label ? 'text-white' : 'text-[#a9a2b6]'}`} href={item.href} key={item.label} aria-current={activeItem === item.label ? 'page' : undefined}>{item.icon}<span className="text-[9px]">{item.label === 'Dashboard' ? 'Home' : item.label}</span></a>)}</nav>;
+}

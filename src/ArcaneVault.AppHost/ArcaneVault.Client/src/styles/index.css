@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+}
+
+.auth-content {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+.auth-card {
+  border: 1px solid #e5e9f0;
+  border-radius: 20px;
+  background: #fff;
+  padding: 25px;
+  box-shadow: 0 16px 35px rgba(24, 29, 65, 0.08);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    border-radius: 18px;
+    padding: 18px;
+  }
+}
+
+.auth-card-mobile-flat {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Keep authenticated page surfaces aligned even where the mockup uses different local utility classes. */
+main > div[class*='max-w-']:not([class*='max-w-[940px]']),
+main > section[class*='max-w-']:not([class*='max-w-[940px]']) {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+main section[class*='rounded-[18px]'],
+main section[class*='rounded-[20px]'],
+main aside[class*='rounded-[20px]'] {
+  border-radius: 20px;
+  padding: 25px;
+}
+
+@media (max-width: 480px) {
+  main section[class*='rounded-[18px]'],
+  main section[class*='rounded-[20px]'],
+  main aside[class*='rounded-[20px]'] {
+    border-radius: 18px;
+    padding: 18px;
+  }
+}
+
+:root { font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Reset and base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Remove default Vite styles that conflict with our design */
+h1 {
+  margin: 0;
+}
+
+button { cursor: pointer; font: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Create your secure Arcane Vault account.">
+	<title>Arcane Vault | Create Account</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root { --ink:#172047; --muted:#727891; --paper:#f1f5f8; --white:#fff; --plum:#281e3e; --plum-light:#573049; --pink:#f62570; --coral:#ff7d82; --line:#e5e9f0; --green:#16b887; --shadow:0 20px 45px rgba(24,29,65,.12); }
+		* { box-sizing:border-box; }
+		body { display:grid; min-width:320px; min-height:100vh; margin:0; place-items:center; color:var(--ink); background:#dfe5eb; font-family:"DM Sans",sans-serif; }
+		button, input { font:inherit; }
+		button { cursor:pointer; }
+		button:focus-visible, input:focus-visible, a:focus-visible { outline:2px solid var(--pink); outline-offset:3px; }
+		.signup-page { display:grid; grid-template-columns:minmax(280px,.86fr) minmax(360px,1.14fr); width:min(100% - 40px, 940px); min-height:650px; overflow:hidden; border-radius:28px; background:var(--white); box-shadow:var(--shadow); }
+		.brand-panel { position:relative; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; padding:36px 38px; color:#fff; background:linear-gradient(145deg,var(--plum-light),var(--plum) 76%); }
+		.brand-panel::before { position:absolute; top:-130px; right:-120px; width:310px; height:310px; content:""; border:48px solid rgba(255,125,130,.13); border-radius:50%; }
+		.brand-panel::after { position:absolute; bottom:-125px; left:-90px; width:260px; height:260px; content:""; border-radius:50%; background:rgba(246,37,112,.1); }
+		.brand, .panel-copy, .security-list { position:relative; z-index:1; }
+		.brand { display:flex; align-items:center; gap:11px; }
+		.brand-mark { display:grid; width:40px; height:40px; place-items:center; color:#fff; font-size:21px; border-radius:12px; background:linear-gradient(145deg,#ff4a87,#cb185b); box-shadow:0 8px 18px rgba(246,37,112,.22); }
+		.brand strong { font-family:"Plus Jakarta Sans",sans-serif; font-size:16px; letter-spacing:-.4px; }
+		.brand small { display:block; margin-top:2px; color:#bdb4c6; font-size:10px; }
+		.panel-copy { max-width:280px; margin:70px 0 auto; }
+		.kicker { margin:0 0 12px; color:#d7c4d2; font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; }
+		.panel-copy h1 { margin:0 0 15px; font-family:"Plus Jakarta Sans",sans-serif; font-size:clamp(27px,4vw,38px); line-height:1.08; letter-spacing:-1.5px; }
+		.panel-copy p { margin:0; color:#c9c0cf; font-size:12px; line-height:1.65; }
+		.security-list { display:grid; gap:12px; margin-top:42px; }
+		.security-item { display:flex; align-items:center; gap:10px; color:#ded5e1; font-size:11px; }
+		.security-icon { display:grid; width:29px; height:29px; place-items:center; color:#fff; border-radius:8px; background:rgba(246,37,112,.3); }
+		.form-panel { display:flex; flex-direction:column; justify-content:center; padding:42px clamp(30px,6vw,72px); }
+		.form-heading { margin-bottom:23px; }
+		.form-heading h2 { margin:0 0 7px; font-family:"Plus Jakarta Sans",sans-serif; font-size:25px; letter-spacing:-.8px; }
+		.form-heading p { margin:0; color:var(--muted); font-size:12px; }
+		.field { display:block; margin-bottom:14px; }
+		.field-label { display:block; margin-bottom:7px; color:#4d5670; font-size:11px; font-weight:700; }
+		.control { position:relative; display:flex; align-items:center; min-height:44px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
+		.control:focus-within { border-color:var(--pink); box-shadow:0 0 0 3px rgba(246,37,112,.1); }
+		.control input { width:100%; min-width:0; padding:11px 13px; color:var(--ink); border:0; outline:0; background:transparent; }
+		.control input::placeholder { color:#a1a6b5; }
+		.password-control input { padding-right:58px; }
+		.view-button { position:absolute; right:8px; padding:6px 9px; color:var(--pink); font-size:10px; font-weight:700; border:0; border-radius:7px; background:#fff0f5; }
+		.strength { display:flex; align-items:center; gap:9px; margin:-4px 0 14px; }
+		.meter { display:flex; flex:1; gap:4px; }
+		.meter i { height:4px; flex:1; border-radius:4px; background:#e6e9ef; }
+		.meter i.active { background:var(--green); }
+		.strength-label { color:var(--muted); font-size:10px; }
+		.terms { display:flex; align-items:flex-start; gap:8px; margin:3px 0 21px; color:var(--muted); font-size:10px; line-height:1.45; }
+		.terms input { flex:0 0 auto; width:15px; height:15px; margin:1px 0 0; accent-color:var(--pink); }
+		a { color:var(--pink); font-weight:700; text-decoration:none; }
+		a:hover { text-decoration:underline; }
+		.submit-button { width:100%; min-height:46px; color:#fff; font-size:12px; font-weight:700; border:0; border-radius:10px; background:linear-gradient(105deg,var(--pink),var(--coral)); box-shadow:0 9px 18px rgba(246,37,112,.18); }
+		.submit-button:hover { filter:brightness(.97); }
+		.status { min-height:18px; margin:10px 0 0; color:var(--pink); font-size:11px; text-align:center; }
+		.sign-in { margin:23px 0 0; color:var(--muted); font-size:11px; text-align:center; }
+		@media (max-width:700px) { body { background:var(--paper); } .signup-page { grid-template-columns:1fr; width:min(100% - 28px, 480px); min-height:0; margin:20px 0; border-radius:22px; } .brand-panel { min-height:285px; padding:28px 26px; } .panel-copy { max-width:360px; margin:45px 0 0; } .panel-copy h1 { font-size:28px; } .security-list { margin-top:30px; } .form-panel { padding:34px 26px 38px; } }
+		@media (max-width:400px) { .signup-page { width:100%; margin:0; border-radius:0; } .brand-panel { min-height:270px; } .form-panel { padding:30px 20px 34px; } }
+	</style>
+</head>
+<body>
+	<main class="signup-page">
+		<section class="brand-panel" aria-labelledby="welcome-title">
+			<div class="brand"><div class="brand-mark" aria-hidden="true">✦</div><div><strong>Arcane Vault</strong><small>Secure your world</small></div></div>
+			<div class="panel-copy"><p class="kicker">Start fresh</p><h1 id="welcome-title">A safer place for every secret.</h1><p>Create one secure home for the passwords and accounts that keep your world moving.</p></div>
+			<div class="security-list"><div class="security-item"><span class="security-icon" aria-hidden="true">⌁</span><span>Private by design</span></div><div class="security-item"><span class="security-icon" aria-hidden="true">✓</span><span>Your vault, under your control</span></div></div>
+		</section>
+		<section class="form-panel" aria-labelledby="signup-title">
+			<div class="form-heading"><h2 id="signup-title">Create your account</h2><p>It only takes a minute to get started.</p></div>
+			<form id="signup-form">
+				<label class="field"><span class="field-label">Your name</span><span class="control"><input id="name" type="text" placeholder="Alex Morgan" autocomplete="name" required></span></label>
+				<label class="field"><span class="field-label">Email address</span><span class="control"><input id="email" type="email" placeholder="you@example.com" autocomplete="email" required></span></label>
+				<label class="field"><span class="field-label">Master password</span><span class="control password-control"><input id="password" type="password" placeholder="Create a strong password" autocomplete="new-password" minlength="8" required><button class="view-button" id="view-password" type="button">Show</button></span></label>
+				<div class="strength" aria-label="Password strength"><div class="meter"><i></i><i></i><i></i><i></i></div><span class="strength-label" id="strength-label">Use 8+ characters</span></div>
+				<label class="field"><span class="field-label">Confirm master password</span><span class="control"><input id="confirm-password" type="password" placeholder="Repeat your password" autocomplete="new-password" minlength="8" required></span></label>
+				<label class="terms"><input id="terms" type="checkbox" required><span>I agree to the <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.</span></label>
+				<button class="submit-button" type="submit">Create my vault <span aria-hidden="true">&#8594;</span></button>
+				<p class="status" id="status" role="status" aria-live="polite"></p>
+			</form>
+			<p class="sign-in">Already have an account? <a href="#sign-in">Sign in</a></p>
+		</section>
+	</main>
+	<script>
+		const form = document.getElementById('signup-form');
+		const password = document.getElementById('password');
+		const confirmPassword = document.getElementById('confirm-password');
+		const status = document.getElementById('status');
+		const strengthLabel = document.getElementById('strength-label');
+		const meterParts = [...document.querySelectorAll('.meter i')];
+		document.getElementById('view-password').addEventListener('click', event => { const isHidden = password.type === 'password'; password.type = isHidden ? 'text' : 'password'; event.currentTarget.textContent = isHidden ? 'Hide' : 'Show'; });
+		password.addEventListener('input', () => { const length = password.value.length; const score = length >= 16 ? 4 : length >= 12 ? 3 : length >= 8 ? 2 : length ? 1 : 0; meterParts.forEach((part, index) => part.classList.toggle('active', index < score)); strengthLabel.textContent = score === 4 ? 'Excellent' : score === 3 ? 'Strong' : score === 2 ? 'Good start' : 'Use 8+ characters'; });
+		form.addEventListener('submit', event => { event.preventDefault(); confirmPassword.setCustomValidity(password.value === confirmPassword.value ? '' : 'Passwords must match.'); if (!form.checkValidity()) { form.reportValidity(); return; } status.textContent = 'Your vault is ready to be created.'; });
+	</script>
+</body>
+</html>

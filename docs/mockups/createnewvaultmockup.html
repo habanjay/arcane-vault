@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Arcane Vault | Create New Vault</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--ink: #172047;
+			--muted: #727891;
+			--paper: #f1f5f8;
+			--white: #fff;
+			--pink: #f62570;
+			--coral: #ff6e76;
+			--line: #d4d7df;
+		}
+
+		* { box-sizing: border-box; }
+		body { margin: 0; min-width: 320px; color: var(--ink); background: #dfe5eb; font-family: "DM Sans", sans-serif; }
+		button, input, select { font: inherit; }
+		button { cursor: pointer; }
+		.page { width: min(100%, 760px); min-height: 100vh; margin: 0 auto; padding: 35px 20px 16px; background: linear-gradient(180deg, #f0edf3 0, #f1f5f8 74%); }
+		.topbar { display: flex; align-items: center; gap: 37px; margin-bottom: 18px; }
+		.back-button { display: grid; flex: 0 0 36px; width: 36px; height: 36px; place-items: center; color: var(--ink); font-size: 27px; line-height: 1; border: 0; border-radius: 50%; background: var(--white); box-shadow: 0 8px 18px rgba(24, 29, 65, .06); }
+		.back-button:hover { color: var(--pink); }
+		h1 { margin: 0; font-family: "Plus Jakarta Sans", sans-serif; font-size: 17px; letter-spacing: -.5px; }
+		.icon-picker { margin: 0 auto 16px; text-align: center; }
+		.vault-icon { display: grid; width: 51px; height: 51px; place-items: center; margin: 0 auto 9px; color: #fff; font-size: 25px; border: 0; border-radius: 50%; background: var(--pink); box-shadow: 0 8px 20px rgba(246, 37, 112, .16); }
+		.vault-icon:hover { background: #d9185e; }
+		.icon-picker span { color: var(--ink); font-size: 11px; }
+		.form-card, .tags-card { padding: 15px 14px; border-radius: 15px; background: var(--white); }
+		.form-card { margin-bottom: 16px; }
+		.card-title { margin: 0 0 15px; color: #112034; font-size: 14px; font-weight: 700; }
+		.field { display: block; margin-bottom: 11px; }
+		.field:last-child { margin-bottom: 0; }
+		.field-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 12px; font-weight: 500; }
+		.control { position: relative; display: flex; align-items: center; min-height: 43px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); }
+		.control:focus-within { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(246, 37, 112, .1); }
+		.control select, .control input { width: 100%; min-width: 0; padding: 11px 10px; color: #4a4d60; font-size: 12px; font-weight: 600; border: 0; outline: 0; background: transparent; }
+		.control select { appearance: none; padding-right: 34px; }
+		.control .select-arrow { position: absolute; right: 13px; pointer-events: none; font-size: 17px; font-weight: 700; }
+		.control .leading-icon { flex: 0 0 28px; margin-left: 10px; color: #545768; font-size: 19px; text-align: center; }
+		.control .leading-icon + input { padding-left: 0; }
+		.control.invalid { border-color: #ff5275; }
+		.password-control input { letter-spacing: 2px; }
+		.view-button { flex: 0 0 auto; margin-right: 9px; padding: 5px 10px; color: #f0526d; font-size: 10px; border: 0; border-radius: 8px; background: #ffebeb; }
+		.tags-card { margin-bottom: 21px; }
+		.tags-card .card-title { margin-bottom: 13px; }
+		.tag-list { display: flex; flex-wrap: wrap; gap: 7px; }
+		.tag { padding: 8px 10px; color: var(--pink); font-size: 11px; border: 0; border-radius: 7px; background: #ffebeb; }
+		.tag.add { color: #4a5062; background: #f0f3f6; }
+		.tag:hover { filter: brightness(.97); }
+		.submit-button { width: 100%; min-height: 46px; color: #fff; font-size: 12px; font-weight: 700; border: 0; border-radius: 14px; background: linear-gradient(105deg, var(--pink), var(--coral)); box-shadow: 0 9px 18px rgba(246, 37, 112, .16); }
+		.submit-button:hover { filter: brightness(.97); }
+		.status { min-height: 18px; margin: 9px 0 0; color: var(--pink); font-size: 11px; text-align: center; }
+
+		@media (min-width: 760px) {
+			.page { min-height: 712px; margin-top: 28px; border-radius: 24px; box-shadow: 0 20px 45px rgba(24, 29, 65, .12); }
+		}
+		@media (max-width: 380px) {
+			.page { padding-right: 18px; padding-left: 18px; }
+		}
+	</style>
+</head>
+<body>
+	<main class="page">
+		<header class="topbar">
+			<button class="back-button" type="button" aria-label="Go back">&#8592;</button>
+			<h1>Create New Vaults</h1>
+		</header>
+
+		<section class="icon-picker" aria-label="Vault icon">
+			<button class="vault-icon" id="icon-button" type="button" aria-label="Change vault icon">&#9673;</button>
+			<span>Change icon</span>
+		</section>
+
+		<form id="vault-form">
+			<section class="form-card" aria-labelledby="credential-title">
+				<h2 class="card-title" id="credential-title">Credential</h2>
+				<label class="field"><span class="field-label">Select Categories</span><span class="control"><select aria-label="Select category"><option>Browser</option><option>Mobile app</option><option>Payment</option><option>Social media</option></select><span class="select-arrow" aria-hidden="true">&#8964;</span></span></label>
+				<label class="field"><span class="field-label">Site Address</span><span class="control"><span class="leading-icon" aria-hidden="true">&#8853;</span><input type="url" value="https://www.dribbble.com" aria-label="Site address" required></span></label>
+				<label class="field"><span class="field-label">User Name</span><span class="control invalid"><span class="leading-icon" aria-hidden="true">&#9823;</span><input type="email" value="hello@designmonk.co" aria-label="User name" required></span></label>
+				<label class="field"><span class="field-label">Password</span><span class="control password-control"><span class="leading-icon" aria-hidden="true">&#128272;</span><input id="password" type="password" value="vault-password" aria-label="Password" required><button class="view-button" id="view-password" type="button">View</button></span></label>
+			</section>
+
+			<section class="tags-card" aria-labelledby="tags-title">
+				<h2 class="card-title" id="tags-title">Add Tag</h2>
+				<div class="tag-list" id="tag-list"><button class="tag" type="button">Design</button><button class="tag" type="button">Browser</button><button class="tag" type="button">Login</button><button class="tag add" id="add-tag" type="button">Add +</button></div>
+			</section>
+			<button class="submit-button" type="submit">Create the vault</button>
+			<p class="status" id="status" role="status" aria-live="polite"></p>
+		</form>
+	</main>
+	<script>
+		const form = document.querySelector("#vault-form");
+		const password = document.querySelector("#password");
+		const status = document.querySelector("#status");
+		const icons = ["◎", "◈", "✦", "✣"];
+		let iconIndex = 0;
+
+		document.querySelector("#icon-button").addEventListener("click", (event) => {
+			iconIndex = (iconIndex + 1) % icons.length;
+			event.currentTarget.textContent = icons[iconIndex];
+		});
+
+		document.querySelector("#view-password").addEventListener("click", (event) => {
+			const isHidden = password.type === "password";
+			password.type = isHidden ? "text" : "password";
+			event.currentTarget.textContent = isHidden ? "Hide" : "View";
+		});
+
+		document.querySelector("#add-tag").addEventListener("click", () => {
+			const tagName = window.prompt("Name this tag");
+			if (!tagName || !tagName.trim()) return;
+			const tag = document.createElement("button");
+			tag.className = "tag";
+			tag.type = "button";
+			tag.textContent = tagName.trim();
+			document.querySelector("#tag-list").insertBefore(tag, document.querySelector("#add-tag"));
+		});
+
+		form.addEventListener("submit", (event) => {
+			event.preventDefault();
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
+			}
+			status.textContent = "Vault ready to be created.";
+		});
+	</script>
+</body>
+</html>

@@ -140,7 +140,7 @@ export default function Dashboard() {
 
   return <div className="flex min-h-screen min-w-[320px] bg-[#dfe5eb] font-sans text-[#172047] max-[840px]:bg-[#f1f5f8]" id="dashboard">
     <Sidebar activeItem={activeItem} onSelect={setActiveItem} />
-    <main className="min-w-0 flex-1 bg-[#f1f5f8] px-[18px] pb-[92px] pt-6 min-[841px]:px-[42px] min-[841px]:pb-[42px] min-[841px]:pt-[35px]">
+    <main className="min-w-0 flex-1 bg-[#f1f5f8] px-[18px] pb-[92px] pt-8 min-[481px]:pt-6 min-[841px]:px-[42px] min-[841px]:pb-[42px] min-[841px]:pt-[35px]">
       <Header onNotification={() => setNotification((current) => current ? '' : 'You are all caught up.')} />
       {notification && <p className="mb-4 rounded-lg bg-[#fff0f5] px-3 py-2 text-xs text-[#f62570]" role="status">{notification}</p>}
       <div className="grid gap-[18px] min-[841px]:grid-cols-[minmax(310px,0.92fr)_minmax(420px,1.5fr)] min-[841px]:gap-6">

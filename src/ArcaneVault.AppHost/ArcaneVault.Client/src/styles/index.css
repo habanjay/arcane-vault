@@ -6,6 +6,59 @@
   --font-display: 'Plus Jakarta Sans', sans-serif;
 }
 
+.auth-content {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+.auth-card {
+  border: 1px solid #e5e9f0;
+  border-radius: 20px;
+  background: #fff;
+  padding: 25px;
+  box-shadow: 0 16px 35px rgba(24, 29, 65, 0.08);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    border-radius: 18px;
+    padding: 18px;
+  }
+}
+
+.auth-card-mobile-flat {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Keep authenticated page surfaces aligned even where the mockup uses different local utility classes. */
+main > div[class*='max-w-']:not([class*='max-w-[940px]']),
+main > section[class*='max-w-']:not([class*='max-w-[940px]']) {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+main section[class*='rounded-[18px]'],
+main section[class*='rounded-[20px]'],
+main aside[class*='rounded-[20px]'] {
+  border-radius: 20px;
+  padding: 25px;
+}
+
+@media (max-width: 480px) {
+  main section[class*='rounded-[18px]'],
+  main section[class*='rounded-[20px]'],
+  main aside[class*='rounded-[20px]'] {
+    border-radius: 18px;
+    padding: 18px;
+  }
+}
+
 :root { font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 /* Reset and base styles */

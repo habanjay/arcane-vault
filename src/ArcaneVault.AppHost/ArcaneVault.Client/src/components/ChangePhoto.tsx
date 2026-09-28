@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import Header from './layout/Header';
 import MobileNavigation from './layout/MobileNavigation';
 import Sidebar from './layout/Sidebar';
@@ -8,6 +8,7 @@ const profile = {
   lastName: 'Monks',
   role: 'Account owner',
 };
+const maxPhotoSize = 5 * 1024 * 1024;
 
 export default function ChangePhoto() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -15,6 +16,10 @@ export default function ChangePhoto() {
   const [status, setStatus] = useState('');
 
   const initials = `${profile.firstName[0]}${profile.lastName[0]}`;
+
+  useEffect(() => () => {
+    if (photoUrl) URL.revokeObjectURL(photoUrl);
+  }, [photoUrl]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -25,10 +30,12 @@ export default function ChangePhoto() {
       return;
     }
 
-    setPhotoUrl((currentUrl) => {
-      if (currentUrl) URL.revokeObjectURL(currentUrl);
-      return URL.createObjectURL(file);
-    });
+    if (file.size > maxPhotoSize) {
+      setStatus('Choose an image smaller than 5 MB.');
+      return;
+    }
+
+    setPhotoUrl(URL.createObjectURL(file));
     setStatus('');
   };
 

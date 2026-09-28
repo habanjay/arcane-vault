@@ -10,6 +10,7 @@ import CreateCategory from './CreateCategory';
 import Settings from './Settings';
 import Audit from './Audit';
 import EditPassword from './EditPassword';
+import ChangePhoto from './ChangePhoto';
 import Footer from './layout/Footer';
 
 function useHashRoute() {
@@ -29,7 +30,7 @@ function RoutePlaceholder({ title, description }: { title: string; description: 
 }
 
 function RoutedPage({ route, children }: { route: string; children: ReactNode }) {
-  if (route === '#login' || route === '#sign-in' || route === '#dashboard' || route === '#vaults' || route === '#generator' || route === '#categories' || route === '#settings' || route === '#audit' || route === '#edit-password') return <>{children}</>;
+  if (route === '#login' || route === '#sign-in' || route === '#dashboard' || route === '#vaults' || route === '#generator' || route === '#categories' || route === '#settings' || route === '#audit' || route === '#edit-password' || route === '#change-photo') return <>{children}</>;
   return <><div>{children}</div><div className="bg-[#f1f5f8] px-[18px] pb-6 min-[841px]:ml-[244px] min-[841px]:px-[42px]"><div className="mx-auto max-w-[1500px]"><Footer /></div></div></>;
 }
 
@@ -37,7 +38,7 @@ function App() {
   const route = useHashRoute();
 
   useEffect(() => {
-    document.title = route === '#login' || route === '#sign-in' ? 'Arcane Vault | Sign In' : route === '#create-account' ? 'Arcane Vault | Create Account' : route === '#add' ? 'Arcane Vault | Add Password' : route === '#create-category' ? 'Arcane Vault | Create Category' : route === '#settings' ? 'Arcane Vault | Settings' : route === '#audit' ? 'Arcane Vault | Audit log' : route === '#edit-password' ? 'Arcane Vault | Edit Password' : 'Arcane Vault | My Vaults';
+    document.title = route === '#login' || route === '#sign-in' ? 'Arcane Vault | Sign In' : route === '#create-account' ? 'Arcane Vault | Create Account' : route === '#add' ? 'Arcane Vault | Add Password' : route === '#create-category' ? 'Arcane Vault | Create Category' : route === '#settings' ? 'Arcane Vault | Settings' : route === '#change-photo' ? 'Arcane Vault | Change Photo' : route === '#audit' ? 'Arcane Vault | Audit log' : route === '#edit-password' ? 'Arcane Vault | Edit Password' : 'Arcane Vault | My Vaults';
   }, [route]);
 
   let page: ReactNode;
@@ -51,6 +52,7 @@ function App() {
   else if (route === '#shared-vaults') page = <RoutePlaceholder title="Shared vaults" description="Secure collaboration for the people and projects you trust." />;
   else if (route === '#generator') page = <PasswordGenerator />;
   else if (route === '#settings') page = <Settings />;
+  else if (route === '#change-photo') page = <ChangePhoto />;
   else if (route === '#audit') page = <Audit />;
   else if (route === '#edit-password') page = <EditPassword />;
   else if (route === '#premium') page = <RoutePlaceholder title="Premium" description="Advanced security reports and unlimited vaults are coming soon." />;

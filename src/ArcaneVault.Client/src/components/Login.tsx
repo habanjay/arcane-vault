@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { authProvider, type AuthProvider } from '../utils/auth';
 
 function BrandPanel() {
   return (
@@ -29,11 +30,12 @@ function InputControl({ children, className = '' }: { children: React.ReactNode;
   return <span className={`flex min-h-11 items-center rounded-[10px] border border-[#e5e9f0] bg-[#fbfcfd] transition-shadow focus-within:border-[#f62570] focus-within:shadow-[0_0_0_3px_rgba(246,37,112,0.1)] ${className}`}>{children}</span>;
 }
 
-function LoginForm() {
+function LoginForm({ auth }: { auth: AuthProvider }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [status, setStatus] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -42,7 +44,21 @@ function LoginForm() {
       return;
     }
 
-    setStatus('Vault unlocked for this mockup.');
+    const formData = new FormData(form);
+    setIsSubmitting(true);
+    setStatus('');
+
+    try {
+      await auth.signIn({
+        email: String(formData.get('email') ?? ''),
+        password: String(formData.get('password') ?? ''),
+      });
+      window.location.hash = '#dashboard';
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Unable to sign in.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -67,7 +83,7 @@ function LoginForm() {
           <label className="flex items-center gap-1.5 text-[#727891]" htmlFor="remember"><input className="size-[15px] accent-[#f62570]" id="remember" name="remember" type="checkbox" /> Remember me</label>
           <a className="font-bold text-[#f62570] no-underline hover:underline" href="#forgot-password">Forgot password?</a>
         </div>
-        <button className="min-h-[46px] w-full rounded-[10px] border-0 bg-linear-to-r from-[#f62570] to-[#ff7d82] text-xs font-bold text-white shadow-[0_9px_18px_rgba(246,37,112,0.18)] transition-[filter] hover:brightness-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#f62570]" type="submit">Unlock my vault <span aria-hidden="true">→</span></button>
+        <button className="min-h-[46px] w-full rounded-[10px] border-0 bg-linear-to-r from-[#f62570] to-[#ff7d82] text-xs font-bold text-white shadow-[0_9px_18px_rgba(246,37,112,0.18)] transition-[filter] hover:brightness-[0.97] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#f62570] disabled:cursor-wait disabled:opacity-70" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Unlocking...' : 'Unlock my vault'} {!isSubmitting && <span aria-hidden="true">→</span>}</button>
         <p className="m-[10px_0_0] min-h-[18px] text-center text-[11px] text-[#f62570]" role="status" aria-live="polite">{status}</p>
       </form>
       <div className="my-5 flex items-center gap-3 text-[10px] text-[#a1a6b5] before:h-px before:flex-1 before:bg-[#e5e9f0] after:h-px after:flex-1 after:bg-[#e5e9f0]"><span>or</span></div>
@@ -76,12 +92,12 @@ function LoginForm() {
   );
 }
 
-export default function Login() {
+export default function Login({ auth = authProvider }: { auth?: AuthProvider }) {
   return (
     <main className="grid min-h-screen min-w-[320px] place-items-center bg-[#dfe5eb] px-5 py-0 font-sans text-[#172047] max-[700px]:bg-[#f1f5f8] max-[700px]:py-5 max-[400px]:px-0 max-[400px]:py-0">
       <div className="grid w-full max-w-[940px] overflow-hidden rounded-[28px] bg-white shadow-[0_20px_45px_rgba(24,29,65,0.12)] max-[700px]:max-w-[480px] max-[700px]:rounded-[22px] max-[400px]:rounded-none lg:min-h-[620px] lg:grid-cols-[minmax(280px,0.86fr)_minmax(360px,1.14fr)]">
         <BrandPanel />
-        <LoginForm />
+        <LoginForm auth={auth} />
       </div>
     </main>
   );

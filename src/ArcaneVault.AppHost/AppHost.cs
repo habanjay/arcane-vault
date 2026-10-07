@@ -1,6 +1,6 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
-var server = builder.AddProject<Projects.ArcaneVault_AppHost_Server>("arcaneVault-server")
+var server = builder.AddProject<Projects.ArcaneVault_Server>("arcaneVault-server")
     .WithHttpHealthCheck("/health")
     .WithExternalHttpEndpoints();
 

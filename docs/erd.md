@@ -1,6 +1,6 @@
 # Arcane Vault — Entity Relationship Diagram & Data Model
 
-This data model is derived from the UI and mock data contracts in [src/ArcaneVault.Client/src](../src/ArcaneVault.Client/src) (components + `utils/*.ts`), normalized into a relational schema suitable for the ASP.NET Core API backing [src/ArcaneVault.AppHost.Server](../src/ArcaneVault.AppHost.Server).
+This data model is derived from the UI and mock data contracts in [src/ArcaneVault.Client/src](../src/ArcaneVault.Client/src) (components + `utils/*.ts`), normalized into a relational schema suitable for the ASP.NET Core API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server).
 
 ## 1. UI → Data mapping
 

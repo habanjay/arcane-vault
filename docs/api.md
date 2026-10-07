@@ -1,6 +1,6 @@
 # Arcane Vault — API Reference
 
-REST API backing [src/ArcaneVault.AppHost.Server](../src/ArcaneVault.AppHost.Server) and consumed by [src/ArcaneVault.Client](../src/ArcaneVault.Client). Resources map 1:1 to the entities defined in [erd.md](erd.md).
+REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consumed by [src/ArcaneVault.Client](../src/ArcaneVault.Client). Resources map 1:1 to the entities defined in [erd.md](erd.md).
 
 ## 1. Conventions
 

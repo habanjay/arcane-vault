@@ -4,8 +4,8 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/ArcaneVault.AppHost.AppHost/ArcaneVault.AppHost.AppHost.csproj" Id="513ea562-fa13-4d7f-b032-cc4fe4ca032a" />
-    <Project Path="src/ArcaneVault.AppHost.Server/ArcaneVault.AppHost.Server.csproj" />
+    <Project Path="src/ArcaneVault.AppHost/ArcaneVault.AppHost.csproj" Id="513ea562-fa13-4d7f-b032-cc4fe4ca032a" />
+    <Project Path="src/ArcaneVault.Server/ArcaneVault.Server.csproj" />
     <Project Path="src/ArcaneVault.Client/ArcaneVault.Client.esproj">
       <Build />
       <Deploy />

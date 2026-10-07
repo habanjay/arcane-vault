@@ -1,5 +1,5 @@
 {
   "appHost": {
-    "path": "ArcaneVault.AppHost.AppHost/ArcaneVault.AppHost.AppHost.csproj"
+    "path": "ArcaneVault.AppHost/ArcaneVault.AppHost.csproj"
   }
 }

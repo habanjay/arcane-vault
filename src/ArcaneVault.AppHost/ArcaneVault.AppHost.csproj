@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArcaneVault.AppHost.Server\ArcaneVault.AppHost.Server.csproj" />
+    <ProjectReference Include="..\ArcaneVault.Server\ArcaneVault.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>

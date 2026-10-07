@@ -1,0 +1,288 @@
+@baseUrl = http://localhost:5400
+@accessToken = {{login.response.body.$.accessToken}}
+@refreshToken = {{login.response.body.$.refreshToken}}
+@categoryId = {{categories.response.body.$.items[0].id}}
+@tagId = {{tags.response.body.$.items[0].id}}
+@vaultItemId = {{vaultItems.response.body.$.items[0].id}}
+@createdVaultItemId = {{createVaultItem.response.body.$.id}}
+@sessionId = {{sessions.response.body.$[0].id}}
+@shareId = {{createShare.response.body.$.id}}
+
+### Register (email unique; use a new address to repeat)
+# @name register
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "new-user@example.com",
+  "masterPassword": "LongDemoPassword123!",
+  "firstName": "New",
+  "lastName": "User"
+}
+
+### Login to the seeded demo account
+# @name login
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "hello@designmonk.com",
+  "masterPassword": "ArcaneVault123!",
+  "deviceName": "VS Code REST Client"
+}
+
+### Start another session to demonstrate remote session revocation
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "hello@designmonk.com",
+  "masterPassword": "ArcaneVault123!",
+  "deviceName": "Second demo device"
+}
+
+### Get current user
+GET {{baseUrl}}/api/v1/users/me
+Authorization: Bearer {{accessToken}}
+
+### Update current user profile (copy the ETag from GET /users/me)
+PATCH {{baseUrl}}/api/v1/users/me
+Authorization: Bearer {{accessToken}}
+If-Match: "1"
+Content-Type: application/json
+
+{
+  "firstName": "Design"
+}
+
+### Upload a profile photo (replace the file path with a local image)
+PUT {{baseUrl}}/api/v1/users/me/photo
+Authorization: Bearer {{accessToken}}
+If-Match: "2"
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="photo"; filename="profile.png"
+Content-Type: image/png
+
+< C:\path\to\profile.png
+--WebAppBoundary--
+
+### Delete the profile photo
+DELETE {{baseUrl}}/api/v1/users/me/photo
+Authorization: Bearer {{accessToken}}
+
+### Get security settings
+GET {{baseUrl}}/api/v1/users/me/security-settings
+Authorization: Bearer {{accessToken}}
+
+### Update security settings
+PATCH {{baseUrl}}/api/v1/users/me/security-settings
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "autoLockMinutes": 15,
+  "theme": "Dark"
+}
+
+### List categories
+# @name categories
+GET {{baseUrl}}/api/v1/categories
+Authorization: Bearer {{accessToken}}
+
+### Create category
+POST {{baseUrl}}/api/v1/categories
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Subscriptions",
+  "description": "Recurring services",
+  "icon": "♡",
+  "color": "pink"
+}
+
+### Get a category
+GET {{baseUrl}}/api/v1/categories/{{categoryId}}
+Authorization: Bearer {{accessToken}}
+
+### Update a category
+PATCH {{baseUrl}}/api/v1/categories/{{categoryId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "description": "Updated category description"
+}
+
+### List tags
+# @name tags
+GET {{baseUrl}}/api/v1/tags
+Authorization: Bearer {{accessToken}}
+
+### Create a tag
+# @name createTag
+POST {{baseUrl}}/api/v1/tags
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Example"
+}
+
+### List and filter vault items
+# @name vaultItems
+GET {{baseUrl}}/api/v1/vault-items?page=1&pageSize=20&sort=-updatedAt
+Authorization: Bearer {{accessToken}}
+
+### Create a vault item
+# @name createVaultItem
+POST {{baseUrl}}/api/v1/vault-items
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "serviceName": "Example service",
+  "siteUrl": "https://example.com",
+  "username": "hello@designmonk.com",
+  "password": "Example mock secret 123!",
+  "categoryId": "{{categoryId}}",
+  "tagIds": ["{{tagId}}"],
+  "notes": "Demo entry"
+}
+
+### Get a vault item (password is omitted)
+GET {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}
+Authorization: Bearer {{accessToken}}
+
+### Update a vault item (copy the ETag from the preceding GET)
+PATCH {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}
+Authorization: Bearer {{accessToken}}
+If-Match: "1"
+Content-Type: application/json
+
+{
+  "serviceName": "Updated service"
+}
+
+### Toggle a vault item's favorite state (copy the current ETag)
+PATCH {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}/favorite
+Authorization: Bearer {{accessToken}}
+If-Match: "2"
+
+### Reveal a password (step-up authentication)
+POST {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}/reveal
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "masterPassword": "ArcaneVault123!"
+}
+
+### Get password history
+GET {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}/history
+Authorization: Bearer {{accessToken}}
+
+### Create a credential share (requires another registered user)
+# @name createShare
+POST {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}/shares
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "sharedWithEmail": "new-user@example.com",
+  "permission": "View"
+}
+
+### List active shares
+GET {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}/shares
+Authorization: Bearer {{accessToken}}
+
+### Get active sessions
+# @name sessions
+GET {{baseUrl}}/api/v1/auth/sessions
+Authorization: Bearer {{accessToken}}
+
+### Revoke a session
+DELETE {{baseUrl}}/api/v1/auth/sessions/{{sessionId}}
+Authorization: Bearer {{accessToken}}
+
+### Get audit summary
+GET {{baseUrl}}/api/v1/audit-logs/summary
+Authorization: Bearer {{accessToken}}
+
+### List audit logs
+GET {{baseUrl}}/api/v1/audit-logs?page=1&pageSize=20&severity=Success
+Authorization: Bearer {{accessToken}}
+
+### Get dashboard summary
+GET {{baseUrl}}/api/v1/dashboard/summary
+Authorization: Bearer {{accessToken}}
+
+### Refresh the current tokens
+# @name refreshTokens
+POST {{baseUrl}}/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Invalid credentials return an error envelope
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "hello@designmonk.com",
+  "masterPassword": "not-the-password"
+}
+
+### Enable two-factor authentication for the next login
+PATCH {{baseUrl}}/api/v1/users/me/security-settings
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "twoFactorEnabled": true
+}
+
+### Start a two-factor login challenge
+# @name loginTwoFactor
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "hello@designmonk.com",
+  "masterPassword": "ArcaneVault123!",
+  "deviceName": "Two-factor demo"
+}
+
+### Verify the mock second factor (demo code 123456)
+POST {{baseUrl}}/api/v1/auth/2fa/verify
+Content-Type: application/json
+
+{
+  "challengeId": "{{loginTwoFactor.response.body.$.challengeId}}",
+  "code": "123456"
+}
+
+### Delete a tag and its associations
+DELETE {{baseUrl}}/api/v1/tags/{{tagId}}
+Authorization: Bearer {{accessToken}}
+
+### Delete a category (items become uncategorized)
+DELETE {{baseUrl}}/api/v1/categories/{{categoryId}}
+Authorization: Bearer {{accessToken}}
+
+### Revoke a share
+DELETE {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}/shares/{{shareId}}
+Authorization: Bearer {{accessToken}}
+
+### Delete a vault item
+DELETE {{baseUrl}}/api/v1/vault-items/{{vaultItemId}}
+Authorization: Bearer {{accessToken}}
+
+### Sign out of the current session
+POST {{baseUrl}}/api/v1/auth/logout
+Authorization: Bearer {{accessToken}}

@@ -4,12 +4,13 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/ArcaneVault.AppHost.AppHost/ArcaneVault.AppHost.AppHost.csproj" Id="513ea562-fa13-4d7f-b032-cc4fe4ca032a" />
-    <Project Path="src/ArcaneVault.AppHost.Server/ArcaneVault.AppHost.Server.csproj" />
+    <Project Path="src/ArcaneVault.AppHost/ArcaneVault.AppHost.csproj" Id="513ea562-fa13-4d7f-b032-cc4fe4ca032a" />
+    <Project Path="src/ArcaneVault.Server/ArcaneVault.Server.csproj" />
     <Project Path="src/ArcaneVault.Client/ArcaneVault.Client.esproj">
       <Build />
       <Deploy />
     </Project>
+    <Project Path="src/ArcaneVault.ServiceDefaults/ArcaneVault.ServiceDefaults.csproj" Id="d2e1a14d-3986-4e07-b13e-8bbce3e61baa" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>

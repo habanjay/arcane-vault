@@ -1,49 +1,75 @@
+using System.Threading.RateLimiting;
+using ArcaneVault.Server.Apis;
+using ArcaneVault.Server.Infrastructure;
+using ArcaneVault.Server.Middleware;
+using ArcaneVault.Server.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.RateLimiting;
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
-
-// Add services to the container.
 builder.Services.AddProblemDetails();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer(BearerOpenApiTransformer.AddSchemeAsync);
+    options.AddOperationTransformer(BearerOpenApiTransformer.AddRequirementAsync);
+});
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddSingleton<MockTokenStore>();
+builder.Services.AddSingleton<IArcaneVaultService, MockArcaneVaultService>();
+builder.Services.AddAuthentication("MockBearer")
+    .AddScheme<AuthenticationSchemeOptions, MockBearerHandler>("MockBearer", _ => { });
+builder.Services.AddAuthorization();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("sensitive", context => RateLimitPartition.GetFixedWindowLimiter(
+        context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0,
+            AutoReplenishment = true
+        }));
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(
+            new ApiErrorResponse(new ApiError("RATE_LIMITED", "Too many requests. Try again later.")), cancellationToken);
+    };
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseExceptionHandler();
+app.UseStatusCodePages(async statusContext =>
+{
+    statusContext.HttpContext.Response.ContentType = "application/json";
+    var status = statusContext.HttpContext.Response.StatusCode;
+    var (code, message) = status switch
+    {
+        StatusCodes.Status404NotFound => ("NOT_FOUND", "The requested resource was not found."),
+        StatusCodes.Status405MethodNotAllowed => ("METHOD_NOT_ALLOWED", "The HTTP method is not supported for this resource."),
+        _ => ("HTTP_ERROR", "The request could not be completed.")
+    };
+    await statusContext.HttpContext.Response.WriteAsJsonAsync(new ApiErrorResponse(new ApiError(code, message)));
+});
+app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options => options.WithTitle("Arcane Vault API"));
 }
 
-
-string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
-
-var api = app.MapGroup("/api");
-api.MapGet("weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+app.MapArcaneVaultApi();
 app.MapDefaultEndpoints();
 
 app.UseFileServer();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

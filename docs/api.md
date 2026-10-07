@@ -2,16 +2,20 @@
 
 REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consumed by [src/ArcaneVault.Client](../src/ArcaneVault.Client). Resources map 1:1 to the entities defined in [erd.md](erd.md).
 
+> **Current implementation:** this API is backed by an in-memory mock service and is intended for local development only. State resets on restart; vault secrets are held in process memory, not encrypted or persisted. Replace `IArcaneVaultService` with a database-backed implementation before production use. The seeded development account is `hello@designmonk.com` / `ArcaneVault123!`. Scalar UI is available at `/scalar/v1` and the generated OpenAPI document at `/openapi/v1.json` in Development.
+
 ## 1. Conventions
 
 - **Base URL:** `/api/v1`
-- **Format:** `application/json; charset=utf-8` for all request/response bodies.
+- **Two-factor authentication:** `POST /auth/2fa/verify` is also unauthenticated because it completes sign-in before an access token has been issued.
+- **Public authentication operations:** account registration, sign-in, token refresh, and second-factor verification are the only unauthenticated API operations.
+- **Format:** `application/json; charset=utf-8` for all request/response bodies, except profile-photo uploads (`multipart/form-data`).
 - **Auth:** Bearer JWT access token in `Authorization: Bearer <token>`, obtained from `POST /auth/login`. All endpoints require auth except `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`.
 - **Resource ids:** every id in a URL or payload is the entity's `PublicId` (`UUID`) — internal `BIGINT` keys are never exposed (see [erd.md §6](erd.md#6-security--performance-best-practices)).
 - **Timestamps:** ISO 8601 UTC, e.g. `2026-09-30T14:22:05Z`.
 - **Ownership:** every resource is implicitly scoped to the authenticated user (`UserId` from the access token); requests for another user's data return `404 Not Found` (not `403`, to avoid confirming existence).
 - **Pagination:** list endpoints accept `page` (default `1`) and `pageSize` (default `20`, max `100`), and return the envelope below.
-- **Optimistic concurrency:** `PATCH`/`PUT` on versioned resources (`VaultItems`, `Users`) require an `If-Match: "<RowVersion>"` header; a stale version returns `409 Conflict`.
+- **Optimistic concurrency:** `PATCH`/`PUT` on versioned resources (`VaultItems`, `Users`) require an `If-Match: "<RowVersion>"` header. The current version is returned in `ETag`; a stale version returns `409 Conflict`, and a missing/invalid header returns `428 Precondition Required`.
 
 ### 1.1 Paginated list envelope
 
@@ -46,6 +50,7 @@ REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consume
 | `403 Forbidden` | Authenticated but not permitted (e.g. acting on a share without `Edit` permission). |
 | `404 Not Found` | Resource doesn't exist or isn't owned by the caller. |
 | `409 Conflict` | Uniqueness violation or stale `If-Match` version. |
+| `428 Precondition Required` | A required `If-Match` version header is missing or invalid. |
 | `422 Unprocessable Entity` | Well-formed but semantically invalid (e.g. `autoLockMinutes` out of range). |
 | `429 Too Many Requests` | Rate limit exceeded (login, password reveal, register). |
 
@@ -82,7 +87,7 @@ REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consume
   "createdAt": "2026-09-30T14:22:05Z"
 }
 ```
-Rate-limited per IP; `409 Conflict` (`EMAIL_ALREADY_EXISTS`) if the email is taken. The master password is hashed with Argon2id server-side — it is never stored or logged in plaintext.
+Rate-limited per IP; `409 Conflict` (`EMAIL_ALREADY_EXISTS`) if the email is taken. The mock implementation hashes the master password with PBKDF2 before retaining it in memory. Production storage must use the selected identity provider and a reviewed password-hashing configuration.
 
 **`POST /auth/login`**
 ```json

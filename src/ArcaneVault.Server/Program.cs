@@ -1,6 +1,7 @@
 using System.Threading.RateLimiting;
 using ArcaneVault.Server.Apis;
-using ArcaneVault.Server.Infrastructure;
+using ArcaneVault.Server.Dtos;
+using ArcaneVault.Server.Mocks;
 using ArcaneVault.Server.Middleware;
 using ArcaneVault.Server.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -18,7 +19,14 @@ builder.Services.AddOpenApi(options =>
 });
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddSingleton<MockTokenStore>();
-builder.Services.AddSingleton<IArcaneVaultService, MockArcaneVaultService>();
+builder.Services.AddSingleton<MockArcaneVaultService>();
+builder.Services.AddSingleton<IAuthService>(services => services.GetRequiredService<MockArcaneVaultService>());
+builder.Services.AddSingleton<IUserService>(services => services.GetRequiredService<MockArcaneVaultService>());
+builder.Services.AddSingleton<ICategoryService>(services => services.GetRequiredService<MockArcaneVaultService>());
+builder.Services.AddSingleton<ITagService>(services => services.GetRequiredService<MockArcaneVaultService>());
+builder.Services.AddSingleton<IVaultItemService>(services => services.GetRequiredService<MockArcaneVaultService>());
+builder.Services.AddSingleton<IAuditService>(services => services.GetRequiredService<MockArcaneVaultService>());
+builder.Services.AddSingleton<IDashboardService>(services => services.GetRequiredService<MockArcaneVaultService>());
 builder.Services.AddAuthentication("MockBearer")
     .AddScheme<AuthenticationSchemeOptions, MockBearerHandler>("MockBearer", _ => { });
 builder.Services.AddAuthorization();

@@ -1,9 +1,7 @@
 using System.Collections.Concurrent;
-using System.Security.Claims;
 using System.Security.Cryptography;
-using ArcaneVault.Server.Apis;
 
-namespace ArcaneVault.Server.Infrastructure;
+namespace ArcaneVault.Server.Mocks;
 
 public sealed class MockTokenStore
 {
@@ -69,41 +67,4 @@ public sealed class MockTokenStore
         .TrimEnd('=').Replace('+', '-').Replace('/', '_');
 
     private sealed record TokenRecord(Guid UserId, Guid SessionId, DateTimeOffset ExpiresAt);
-}
-
-public sealed class MockBearerHandler(
-    Microsoft.Extensions.Options.IOptionsMonitor<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions> options,
-    ILoggerFactory logger,
-    System.Text.Encodings.Web.UrlEncoder encoder,
-    MockTokenStore tokens) : Microsoft.AspNetCore.Authentication.AuthenticationHandler<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions>(options, logger, encoder)
-{
-    protected override Task<Microsoft.AspNetCore.Authentication.AuthenticateResult> HandleAuthenticateAsync()
-    {
-        var authorization = Request.Headers.Authorization.ToString();
-        if (!authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-        {
-            return Task.FromResult(Microsoft.AspNetCore.Authentication.AuthenticateResult.NoResult());
-        }
-
-        var token = authorization["Bearer ".Length..].Trim();
-        if (!tokens.TryGetAccessToken(token, out var userId, out var sessionId))
-        {
-            return Task.FromResult(Microsoft.AspNetCore.Authentication.AuthenticateResult.Fail("The access token is invalid or expired."));
-        }
-
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim("session_id", sessionId.ToString())
-        };
-        var identity = new ClaimsIdentity(claims, Scheme.Name);
-        return Task.FromResult(Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(
-            new Microsoft.AspNetCore.Authentication.AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name)));
-    }
-
-    protected override Task HandleChallengeAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties properties)
-    {
-        Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Response.WriteAsJsonAsync(new ApiErrorResponse(new ApiError("UNAUTHORIZED", "A valid bearer access token is required.")));
-    }
 }

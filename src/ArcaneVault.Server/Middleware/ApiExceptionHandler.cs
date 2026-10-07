@@ -1,4 +1,4 @@
-using ArcaneVault.Server.Apis;
+using ArcaneVault.Server.Dtos;
 using ArcaneVault.Server.Services;
 using Microsoft.AspNetCore.Diagnostics;
 

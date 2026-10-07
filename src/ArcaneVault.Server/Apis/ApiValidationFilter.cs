@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ArcaneVault.Server.Dtos;
 
 namespace ArcaneVault.Server.Apis;
 

@@ -13,4 +13,7 @@
     <Project Path="src/ArcaneVault.ServiceDefaults/ArcaneVault.ServiceDefaults.csproj" Id="d2e1a14d-3986-4e07-b13e-8bbce3e61baa" />
   </Folder>
   <Folder Name="/tests/" />
+  <Folder Name="/tests/ArcaneVault.Server.Tests/">
+    <Project Path="tests/ArcaneVault.Server.Tests/ArcaneVault.Server.Tests.csproj" />
+  </Folder>
 </Solution>

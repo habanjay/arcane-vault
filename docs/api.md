@@ -1,6 +1,9 @@
 # Arcane Vault — API Reference
 
-REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consumed by [src/ArcaneVault.Client](../src/ArcaneVault.Client). Resources map 1:1 to the entities defined in [erd.md](erd.md).
+REST API implemented by [src/ArcaneVault.Server](../src/ArcaneVault.Server).
+The client in [src/ArcaneVault.Client](../src/ArcaneVault.Client) is currently
+a UI prototype that uses local mock authentication and does not call this API.
+Resources map to the entities defined in [erd.md](erd.md).
 
 > **Persistence:** the API uses SQL Server stored procedures. Apply [001_Initial.sql](../src/ArcaneVault.Server/Database/Migrations/001_Initial.sql) once before starting the server and set `ConnectionStrings__ArcaneVault` for your SQL Server instance. New users register through the API; there is no seeded demo account. Vault secrets are protected with ASP.NET Core Data Protection before being stored. Persist and restrict access to the configured Data Protection key directory (`DataProtection:KeyDirectory`) or existing vault secrets will not be decryptable after key loss. Scalar UI and OpenAPI are available in Development.
 

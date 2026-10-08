@@ -2,7 +2,7 @@
 
 REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consumed by [src/ArcaneVault.Client](../src/ArcaneVault.Client). Resources map 1:1 to the entities defined in [erd.md](erd.md).
 
-> **Current implementation:** this API is backed by an in-memory mock service and is intended for local development only. State resets on restart; vault secrets are held in process memory, not encrypted or persisted. Replace `IArcaneVaultService` with a database-backed implementation before production use. The seeded development account is `hello@designmonk.com` / `ArcaneVault123!`. Scalar UI is available at `/scalar/v1` and the generated OpenAPI document at `/openapi/v1.json` in Development.
+> **Persistence:** the API uses SQL Server stored procedures. Apply [001_Initial.sql](../src/ArcaneVault.Server/Database/Migrations/001_Initial.sql) once before starting the server and set `ConnectionStrings__ArcaneVault` for your SQL Server instance. New users register through the API; there is no seeded demo account. Vault secrets are protected with ASP.NET Core Data Protection before being stored. Persist and restrict access to the configured Data Protection key directory (`DataProtection:KeyDirectory`) or existing vault secrets will not be decryptable after key loss. Scalar UI and OpenAPI are available in Development.
 
 ## 1. Conventions
 
@@ -11,7 +11,7 @@ REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consume
 - **Public authentication operations:** account registration, sign-in, token refresh, and second-factor verification are the only unauthenticated API operations.
 - **Format:** `application/json; charset=utf-8` for all request/response bodies, except profile-photo uploads (`multipart/form-data`).
 - **Auth:** Bearer JWT access token in `Authorization: Bearer <token>`, obtained from `POST /auth/login`. All endpoints require auth except `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`.
-- **Resource ids:** every id in a URL or payload is the entity's `PublicId` (`UUID`) — internal `BIGINT` keys are never exposed (see [erd.md §6](erd.md#6-security--performance-best-practices)).
+- **Resource ids:** resource identifiers are SQL Server `uniqueidentifier` primary keys and are scoped to the authenticated user.
 - **Timestamps:** ISO 8601 UTC, e.g. `2026-09-30T14:22:05Z`.
 - **Ownership:** every resource is implicitly scoped to the authenticated user (`UserId` from the access token); requests for another user's data return `404 Not Found` (not `403`, to avoid confirming existence).
 - **Pagination:** list endpoints accept `page` (default `1`) and `pageSize` (default `20`, max `100`), and return the envelope below.
@@ -87,7 +87,7 @@ REST API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server) and consume
   "createdAt": "2026-09-30T14:22:05Z"
 }
 ```
-Rate-limited per IP; `409 Conflict` (`EMAIL_ALREADY_EXISTS`) if the email is taken. The mock implementation hashes the master password with PBKDF2 before retaining it in memory. Production storage must use the selected identity provider and a reviewed password-hashing configuration.
+Rate-limited per IP; `409 Conflict` (`EMAIL_ALREADY_EXISTS`) if the email is taken. Master-password verifiers are stored with a per-user salt using PBKDF2-HMAC-SHA256.
 
 **`POST /auth/login`**
 ```json
@@ -107,7 +107,9 @@ Rate-limited per IP; `409 Conflict` (`EMAIL_ALREADY_EXISTS`) if the email is tak
 // 202 Accepted (2FA enabled — pending `/auth/2fa/verify`)
 { "twoFactorRequired": true, "challengeId": "c1a0...-challenge-id" }
 ```
-Every attempt (success or failure) writes an `AuditLogs` row (`NewSignIn` / `FailedSignIn`) with `IpAddress`/`UserAgent`; failed logins are rate-limited per email+IP and return `401 Unauthorized` (`INVALID_CREDENTIALS`) without revealing whether the email exists.
+Every attempt (success or failure) writes an `AuditLogs` row (`NewSignIn` / `FailedSignIn`). Login is rate-limited per IP and failed logins return `401 Unauthorized` (`INVALID_CREDENTIALS`) without revealing whether the email exists.
+
+Second-factor enrollment is not exposed by this API. Enabling `twoFactorEnabled` returns `422 TWO_FACTOR_ENROLLMENT_REQUIRED`; this implementation does not accept a demo verification code.
 
 ## 3. Profile & settings
 
@@ -116,6 +118,7 @@ Every attempt (success or failure) writes an `AuditLogs` row (`NewSignIn` / `Fai
 | `GET` | `/users/me` | Current user profile. |
 | `PATCH` | `/users/me` | Update `firstName`/`lastName`/`email`. |
 | `PUT` | `/users/me/photo` | Upload/replace profile photo (`multipart/form-data`, image/*, ≤ 5 MB). |
+| `GET` | `/users/me/photo` | Get the stored profile photo. |
 | `DELETE` | `/users/me/photo` | Remove profile photo (falls back to initials in the client). |
 | `GET` | `/users/me/security-settings` | Read `UserSecuritySettings`. |
 | `PATCH` | `/users/me/security-settings` | Update 2FA, auto-lock, theme, reminders. |
@@ -129,7 +132,7 @@ Every attempt (success or failure) writes an `AuditLogs` row (`NewSignIn` / `Fai
   "firstName": "Design",
   "lastName": "Monks",
   "role": "Owner",
-  "profilePhotoUrl": "https://cdn.arcanevault.app/photos/5a9e....jpg",
+  "profilePhotoUrl": "/api/v1/users/me/photo",
   "createdAt": "2025-01-10T09:00:00Z",
   "lastLoginAt": "2026-09-30T14:22:05Z"
 }
@@ -137,12 +140,12 @@ Every attempt (success or failure) writes an `AuditLogs` row (`NewSignIn` / `Fai
 
 **`PATCH /users/me/security-settings`**
 ```json
-// Request (all fields optional)
-{ "twoFactorEnabled": true, "autoLockEnabled": true, "autoLockMinutes": 15, "theme": "Dark", "securityRemindersEnabled": true }
+// Request (all fields optional; twoFactorEnabled cannot be enabled until enrollment is available)
+{ "autoLockEnabled": true, "autoLockMinutes": 15, "theme": "Dark", "securityRemindersEnabled": true }
 ```
 ```json
 // 200 OK
-{ "twoFactorEnabled": true, "autoLockEnabled": true, "autoLockMinutes": 15, "theme": "Dark", "securityRemindersEnabled": true, "updatedAt": "2026-09-30T14:25:00Z" }
+{ "twoFactorEnabled": false, "autoLockEnabled": true, "autoLockMinutes": 15, "theme": "Dark", "securityRemindersEnabled": true, "updatedAt": "2026-09-30T14:25:00Z" }
 ```
 `autoLockMinutes` must be `1`–`120` and `theme` one of `Light`/`Dark`/`System`; violations return `422 Unprocessable Entity`.
 
@@ -265,7 +268,7 @@ The plaintext password is **never** included in list/get responses — only `pas
   "updatedAt": "2026-09-30T14:35:00Z"
 }
 ```
-`password` and `notes` travel over TLS and are encrypted (AES-256-GCM, per-record nonce) before being persisted to `EncryptedPassword`/`EncryptedNotes`; `passwordStrengthScore` is computed server-side from the submitted password and cached. `serviceName` ≤ 100 chars, `username` ≤ 254 chars, `siteUrl` ≤ 2048 chars. Writes an `AuditLogs` row (`PasswordCreated`).
+`password` and `notes` travel over TLS and are protected with ASP.NET Core Data Protection before being persisted to `EncryptedPassword`/`EncryptedNotes`; `passwordStrengthScore` is computed server-side from the submitted password and cached. `serviceName` ≤ 100 chars, `username` ≤ 254 chars, `siteUrl` ≤ 2048 chars. Writes an `AuditLogs` row (`PasswordCreated`).
 
 ### 6.3 `POST /vault-items/{id}/reveal`
 ```json

@@ -2,6 +2,8 @@
 
 This data model is derived from the UI and mock data contracts in [src/ArcaneVault.Client/src](../src/ArcaneVault.Client/src) (components + `utils/*.ts`), normalized into a relational schema suitable for the ASP.NET Core API backing [src/ArcaneVault.Server](../src/ArcaneVault.Server).
 
+> **Implemented SQL schema:** [001_Initial.sql](../src/ArcaneVault.Server/Database/Migrations/001_Initial.sql) is authoritative for the current server. It uses `uniqueidentifier` primary and foreign keys directly (instead of the `BIGINT`/`PublicId` split shown in this design reference) and stores Data Protection ciphertext as Base64 text in the `EncryptedPassword`/`EncryptedNotes` columns.
+
 ## 1. UI → Data mapping
 
 | UI source | TypeScript contract | Backing table |
@@ -9,7 +11,7 @@ This data model is derived from the UI and mock data contracts in [src/ArcaneVau
 | [auth.ts](../src/ArcaneVault.Client/src/utils/auth.ts) `AuthUser` | `id, email, firstName, lastName, role` | `Users` |
 | [settingsData.ts](../src/ArcaneVault.Client/src/utils/settingsData.ts) `SettingsProfile` | profile fields | `Users` |
 | [settingsData.ts](../src/ArcaneVault.Client/src/utils/settingsData.ts) `SecuritySetting`, `SettingsPreferences` | 2FA, auto-lock, theme, reminders | `UserSecuritySettings` |
-| [ChangePhoto.tsx](../src/ArcaneVault.Client/src/components/ChangePhoto.tsx) | profile photo upload | `Users.ProfilePhotoUrl` |
+| [ChangePhoto.tsx](../src/ArcaneVault.Client/src/components/ChangePhoto.tsx) | profile photo upload | `Users.ProfilePhotoData`, `ProfilePhotoContentType`, `ProfilePhotoUrl` |
 | [dashboardData.ts](../src/ArcaneVault.Client/src/utils/dashboardData.ts) `PasswordCategory`, `VaultCategory` | name, icon, tone/color, count | `Categories` |
 | [CreateCategory.tsx](../src/ArcaneVault.Client/src/components/CreateCategory.tsx) | name, description, icon, color | `Categories` |
 | [dashboardData.ts](../src/ArcaneVault.Client/src/utils/dashboardData.ts) `VaultPassword`, `RecentPassword` | service, account, favorite, tone, category | `VaultItems` |
@@ -337,8 +339,9 @@ Store enums as short `VARCHAR` with a `CHECK` constraint (portable, human-readab
 
 ## 6. Security & performance best practices
 
-- **Zero plaintext secrets.** `EncryptedPassword`, `EncryptedNotes`, and `TwoFactorSecretEncrypted` are ciphertext only (AES-256-GCM), with a per-record nonce (`EncryptionNonce`) — never reuse a nonce with the same key. Derive the data-encryption key from the user's master password via Argon2id and never persist it; only store the Argon2id hash for authentication (`MasterPasswordHash`).
-- **Non-enumerable public identifiers.** Internal PKs are sequential `BIGINT` (fast clustered-index inserts, no page fragmentation), while `PublicId` (`UNIQUEIDENTIFIER`) is the identifier exposed through the API/URLs to avoid ID-enumeration attacks (OWASP A01 Broken Access Control).
+- **Zero plaintext vault secrets.** The server protects password and note values with ASP.NET Core Data Protection before storing them. The key ring in `DataProtection:KeyDirectory` must be backed up and protected from unauthorized access; losing the key ring makes stored vault secrets unrecoverable.
+- **Password verification.** The current implementation stores a per-user random salt and PBKDF2-HMAC-SHA256 verifier (600,000 iterations). The master password itself is not stored.
+- **User-scoped identifiers.** The migration uses `UNIQUEIDENTIFIER` primary keys exposed through API URLs. Every procedure also filters on the authenticated user's id to prevent IDOR; an opaque identifier does not replace authorization.
 - **Authorization at the query boundary.** Every row in `Categories`, `Tags`, `VaultItems`, `AuditLogs`, `UserSessions` carries `UserId`; all reads/writes must filter by the authenticated user's id (never trust a client-supplied `UserId`) to prevent IDOR.
 - **Least-privilege reads.** `Users` stays narrow (auth-critical columns only) with security/preference flags split into `UserSecuritySettings`, so the hot authentication path doesn't scan or lock unrelated columns.
 - **Targeted composite indexes** on `(UserId, CategoryId)`, `(UserId, IsFavorite)`, `(UserId, CreatedAt DESC)` match the actual dashboard/list/audit queries from the UI instead of indexing every column, keeping write amplification low.

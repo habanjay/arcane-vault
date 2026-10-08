@@ -25,7 +25,7 @@ internal static class VaultItemEndpoints
             return TypedResults.Created($"/api/v1/vault-items/{item.Id}", item);
         })
         .WithName("CreateVaultItem").WithSummary("Create a credential")
-        .WithDescription("The mock service keeps secrets in memory only. Do not use it as production secret storage.")
+        .WithDescription("Credential secrets are protected before they are stored in the SQL database.")
         .Produces<VaultItemDetailResponse>(StatusCodes.Status201Created)
         .Produces<ApiErrorResponse>(StatusCodes.Status404NotFound);
 

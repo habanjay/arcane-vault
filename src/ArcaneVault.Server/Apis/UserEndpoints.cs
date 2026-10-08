@@ -39,14 +39,16 @@ internal static class UserEndpoints
             var contentType = photo.ContentType.ToLowerInvariant();
             if (contentType is not ("image/jpeg" or "image/png" or "image/gif" or "image/webp"))
                 throw new ApiException(StatusCodes.Status422UnprocessableEntity, "INVALID_PHOTO_TYPE", "The profile photo must be a JPEG, PNG, GIF, or WebP image.");
-            var signature = new byte[12];
+            byte[] content;
             await using (var stream = photo.OpenReadStream())
             {
-                var bytesRead = await stream.ReadAsync(signature, cancellationToken);
-                if (!ApiEndpointHelpers.IsSupportedImage(contentType, signature.AsSpan(0, bytesRead)))
-                    throw new ApiException(StatusCodes.Status422UnprocessableEntity, "INVALID_PHOTO_CONTENT", "The uploaded content is not a supported image.");
+                using var buffer = new MemoryStream();
+                await stream.CopyToAsync(buffer, cancellationToken);
+                content = buffer.ToArray();
             }
-            var user = service.UpdateProfilePhoto(ApiEndpointHelpers.UserId(context), contentType, ApiEndpointHelpers.RequiredVersion(context));
+            if (!ApiEndpointHelpers.IsSupportedImage(contentType, content))
+                throw new ApiException(StatusCodes.Status422UnprocessableEntity, "INVALID_PHOTO_CONTENT", "The uploaded content is not a supported image.");
+            var user = service.UpdateProfilePhoto(ApiEndpointHelpers.UserId(context), contentType, content, ApiEndpointHelpers.RequiredVersion(context));
             ApiEndpointHelpers.SetVersion(context, user.RowVersion);
             return TypedResults.Ok(user);
         })
@@ -57,6 +59,15 @@ internal static class UserEndpoints
         .Produces<ApiErrorResponse>(StatusCodes.Status409Conflict)
         .Produces<ApiErrorResponse>(StatusCodes.Status422UnprocessableEntity)
         .Produces<ApiErrorResponse>(StatusCodes.Status428PreconditionRequired);
+
+        users.MapGet("/me/photo", (HttpContext context, IUserService service) =>
+        {
+            var photo = service.GetProfilePhoto(ApiEndpointHelpers.UserId(context));
+            return photo is null ? Results.NotFound() : Results.File(photo.Content, photo.ContentType);
+        })
+        .WithName("GetProfilePhoto").WithSummary("Get the current user's profile photo")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
 
         users.MapDelete("/me/photo", (HttpContext context, IUserService service, CancellationToken cancellationToken) =>
         {

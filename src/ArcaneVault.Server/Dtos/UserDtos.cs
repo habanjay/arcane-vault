@@ -5,6 +5,9 @@ namespace ArcaneVault.Server.Dtos;
 /// <summary>Represents a user profile.</summary>
 public sealed record UserResponse(Guid Id, string Email, string FirstName, string LastName, string Role, string? ProfilePhotoUrl, DateTimeOffset CreatedAt, DateTimeOffset? LastLoginAt, long RowVersion);
 
+/// <summary>Contains the current user's stored profile photo.</summary>
+public sealed record UserProfilePhotoResponse(byte[] Content, string ContentType);
+
 /// <summary>Provides fields that can be changed on the current user's profile.</summary>
 public sealed record UpdateUserRequest
 {

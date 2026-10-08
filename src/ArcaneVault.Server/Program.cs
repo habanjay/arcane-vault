@@ -1,9 +1,9 @@
 using System.Threading.RateLimiting;
 using ArcaneVault.Server.Apis;
 using ArcaneVault.Server.Dtos;
-using ArcaneVault.Server.Mocks;
 using ArcaneVault.Server.Middleware;
 using ArcaneVault.Server.Services;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
@@ -18,17 +18,26 @@ builder.Services.AddOpenApi(options =>
     options.AddOperationTransformer(BearerOpenApiTransformer.AddRequirementAsync);
 });
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
-builder.Services.AddSingleton<MockTokenStore>();
-builder.Services.AddSingleton<MockArcaneVaultService>();
-builder.Services.AddSingleton<IAuthService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddSingleton<IUserService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddSingleton<ICategoryService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddSingleton<ITagService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddSingleton<IVaultItemService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddSingleton<IAuditService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddSingleton<IDashboardService>(services => services.GetRequiredService<MockArcaneVaultService>());
-builder.Services.AddAuthentication("MockBearer")
-    .AddScheme<AuthenticationSchemeOptions, MockBearerHandler>("MockBearer", _ => { });
+var configuredKeyDirectory = builder.Configuration["DataProtection:KeyDirectory"];
+var keyDirectory = string.IsNullOrWhiteSpace(configuredKeyDirectory)
+    ? Path.Combine(builder.Environment.ContentRootPath, "App_Data", "DataProtection-Keys")
+    : Path.IsPathRooted(configuredKeyDirectory)
+        ? configuredKeyDirectory
+        : Path.Combine(builder.Environment.ContentRootPath, configuredKeyDirectory);
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keyDirectory))
+    .SetApplicationName("ArcaneVault");
+builder.Services.AddScoped<SqlArcaneVaultService>();
+builder.Services.AddScoped<IAuthService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<IAccessTokenValidator>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<IUserService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<ICategoryService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<ITagService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<IVaultItemService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<IAuditService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddScoped<IDashboardService>(services => services.GetRequiredService<SqlArcaneVaultService>());
+builder.Services.AddAuthentication("Bearer")
+    .AddScheme<AuthenticationSchemeOptions, SqlBearerHandler>("Bearer", _ => { });
 builder.Services.AddAuthorization();
 builder.Services.AddRateLimiter(options =>
 {

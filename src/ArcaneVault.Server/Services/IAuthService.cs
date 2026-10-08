@@ -12,3 +12,8 @@ public interface IAuthService
     IReadOnlyList<SessionResponse> GetSessions(Guid userId);
     void RevokeSession(Guid userId, Guid sessionId);
 }
+
+public interface IAccessTokenValidator
+{
+    bool TryValidateAccessToken(string token, out Guid userId, out Guid sessionId);
+}

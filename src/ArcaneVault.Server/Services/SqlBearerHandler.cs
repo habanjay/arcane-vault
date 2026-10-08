@@ -2,27 +2,23 @@ using System.Security.Claims;
 using ArcaneVault.Server.Dtos;
 using Microsoft.AspNetCore.Authentication;
 
-namespace ArcaneVault.Server.Mocks;
+namespace ArcaneVault.Server.Services;
 
-public sealed class MockBearerHandler(
+public sealed class SqlBearerHandler(
     Microsoft.Extensions.Options.IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
     System.Text.Encodings.Web.UrlEncoder encoder,
-    MockTokenStore tokens) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    IAccessTokenValidator tokens) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var authorization = Request.Headers.Authorization.ToString();
         if (!authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-        {
             return Task.FromResult(AuthenticateResult.NoResult());
-        }
 
         var token = authorization["Bearer ".Length..].Trim();
-        if (!tokens.TryGetAccessToken(token, out var userId, out var sessionId))
-        {
+        if (!tokens.TryValidateAccessToken(token, out var userId, out var sessionId))
             return Task.FromResult(AuthenticateResult.Fail("The access token is invalid or expired."));
-        }
 
         var claims = new[]
         {

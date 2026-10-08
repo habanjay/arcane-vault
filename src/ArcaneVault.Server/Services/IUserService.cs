@@ -8,6 +8,7 @@ public interface IUserService
     UserResponse UpdateUser(Guid userId, UpdateUserRequest request, long expectedVersion);
     SecuritySettingsResponse GetSecuritySettings(Guid userId);
     SecuritySettingsResponse UpdateSecuritySettings(Guid userId, UpdateSecuritySettingsRequest request);
-    UserResponse UpdateProfilePhoto(Guid userId, string contentType, long expectedVersion);
+    UserResponse UpdateProfilePhoto(Guid userId, string contentType, byte[] photo, long expectedVersion);
+    UserProfilePhotoResponse? GetProfilePhoto(Guid userId);
     void DeleteProfilePhoto(Guid userId);
 }

@@ -8,7 +8,7 @@
 @sessionId = {{sessions.response.body.$[0].id}}
 @shareId = {{createShare.response.body.$.id}}
 
-### Register (email unique; use a new address to repeat)
+### Register (use an email that is not already registered)
 # @name register
 POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
@@ -20,14 +20,14 @@ Content-Type: application/json
   "lastName": "User"
 }
 
-### Login to the seeded demo account
+### Log in to the account registered above
 # @name login
 POST {{baseUrl}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "hello@designmonk.com",
-  "masterPassword": "ArcaneVault123!",
+  "email": "new-user@example.com",
+  "masterPassword": "LongDemoPassword123!",
   "deviceName": "VS Code REST Client"
 }
 
@@ -36,8 +36,8 @@ POST {{baseUrl}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "hello@designmonk.com",
-  "masterPassword": "ArcaneVault123!",
+  "email": "new-user@example.com",
+  "masterPassword": "LongDemoPassword123!",
   "deviceName": "Second demo device"
 }
 
@@ -67,6 +67,10 @@ Content-Type: image/png
 
 < C:\path\to\profile.png
 --WebAppBoundary--
+
+### Get the stored profile photo
+GET {{baseUrl}}/api/v1/users/me/photo
+Authorization: ******
 
 ### Delete the profile photo
 DELETE {{baseUrl}}/api/v1/users/me/photo
@@ -145,8 +149,8 @@ Content-Type: application/json
 {
   "serviceName": "Example service",
   "siteUrl": "https://example.com",
-  "username": "hello@designmonk.com",
-  "password": "Example mock secret 123!",
+  "username": "new-user@example.com",
+  "password": "Example vault secret 123!",
   "categoryId": "{{categoryId}}",
   "tagIds": ["{{tagId}}"],
   "notes": "Demo entry"
@@ -177,7 +181,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "masterPassword": "ArcaneVault123!"
+  "masterPassword": "LongDemoPassword123!"
 }
 
 ### Get password history
@@ -234,37 +238,17 @@ POST {{baseUrl}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "hello@designmonk.com",
+  "email": "unknown@example.com",
   "masterPassword": "not-the-password"
 }
 
-### Enable two-factor authentication for the next login
+### Keep two-factor disabled until enrollment is available
 PATCH {{baseUrl}}/api/v1/users/me/security-settings
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "twoFactorEnabled": true
-}
-
-### Start a two-factor login challenge
-# @name loginTwoFactor
-POST {{baseUrl}}/api/v1/auth/login
-Content-Type: application/json
-
-{
-  "email": "hello@designmonk.com",
-  "masterPassword": "ArcaneVault123!",
-  "deviceName": "Two-factor demo"
-}
-
-### Verify the mock second factor (demo code 123456)
-POST {{baseUrl}}/api/v1/auth/2fa/verify
-Content-Type: application/json
-
-{
-  "challengeId": "{{loginTwoFactor.response.body.$.challengeId}}",
-  "code": "123456"
+  "twoFactorEnabled": false
 }
 
 ### Delete a tag and its associations

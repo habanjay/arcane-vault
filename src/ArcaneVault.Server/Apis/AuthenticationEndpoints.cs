@@ -16,7 +16,7 @@ internal static class AuthenticationEndpoints
         })
         .AllowAnonymous().RequireRateLimiting("sensitive").WithName("Register")
         .WithSummary("Create an account")
-        .WithDescription("Creates a local mock account. Master passwords are hashed before being stored by the mock service.")
+        .WithDescription("Creates an account and stores its password verifier in the configured SQL database.")
         .Produces<UserResponse>(StatusCodes.Status201Created)
         .Produces<ApiErrorResponse>(StatusCodes.Status409Conflict);
 
@@ -31,7 +31,7 @@ internal static class AuthenticationEndpoints
         })
         .AllowAnonymous().RequireRateLimiting("sensitive").WithName("Login")
         .WithSummary("Sign in")
-        .WithDescription("Exchanges credentials for mock bearer and refresh tokens, or returns a second-factor challenge.")
+        .WithDescription("Exchanges credentials for bearer and refresh tokens, or returns a second-factor challenge.")
         .Produces<LoginResponse>(StatusCodes.Status200OK)
         .Produces<TwoFactorChallengeResponse>(StatusCodes.Status202Accepted)
         .Produces<ApiErrorResponse>(StatusCodes.Status401Unauthorized);
@@ -51,7 +51,7 @@ internal static class AuthenticationEndpoints
             return TypedResults.Ok(service.VerifyTwoFactor(request));
         })
         .AllowAnonymous().RequireRateLimiting("sensitive").WithName("VerifyTwoFactor").WithSummary("Complete two-factor sign-in")
-        .WithDescription("The mock implementation accepts the demo verification code 123456.")
+        .WithDescription("Completes an enrolled second-factor challenge.")
         .Produces<LoginResponse>(StatusCodes.Status200OK)
         .Produces<ApiErrorResponse>(StatusCodes.Status401Unauthorized);
 

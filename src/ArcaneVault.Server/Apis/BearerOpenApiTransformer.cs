@@ -15,7 +15,7 @@ internal static class BearerOpenApiTransformer
             Type = SecuritySchemeType.Http,
             Scheme = "bearer",
             BearerFormat = "opaque access token",
-            Description = "Obtain a mock access token from POST /api/v1/auth/login."
+            Description = "Obtain a bearer access token from POST /api/v1/auth/login."
         };
         return Task.CompletedTask;
     }
